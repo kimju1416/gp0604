@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 광평중학교 체육한마당</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@900&family=Gugi&family=Single+Day&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --blue:#1d4ed8;--blue-dk:#1e40af;--blue-lt:#3b82f6;--blue-pale:#dbeafe;
+  --sun:#fbbf24;--sun-dk:#f59e0b;--sun-pale:#fef3c7;--sun-deep:#92400e;
+  --bg:#eff6ff;--surface:#fff;--text:#1e293b;--sub:#334155;--muted:#64748b;
+  --border:#bfdbfe;--border-lt:#e0eaff;
+  --ok:#059669;--err:#dc2626;
+  --sh:0 2px 12px rgba(29,78,216,.09);
+}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:64px;overflow-x:hidden;}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 55%,#2563eb 100%);color:#fff;position:relative;overflow:hidden;}
+.hd::before{content:'';position:absolute;top:-70px;right:-50px;width:240px;height:240px;border-radius:50%;background:rgba(251,191,36,.13);pointer-events:none;}
+.hd-deco{position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--sun) 35%,var(--sun-dk) 65%,transparent);}
+.hd-inner{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:12px 20px 16px;}
+.hd-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0;gap:8px;padding-bottom:0;}
+.hd-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.38);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:700;color:var(--sun);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0;}
+
+/* 날씨 위젯 */
+.weather-box{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 10px;text-align:center;flex-shrink:0;min-width:52px;}
+.weather-icon{font-size:18px;line-height:1.2;}
+.weather-temp{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;color:var(--sun);line-height:1.1;}
+.weather-desc{font-size:9px;color:rgba(255,255,255,.55);margin-top:2px;}
+.weather-loc{font-size:8px;color:rgba(255,255,255,.35);margin-top:1px;}
+
+.hd-title-wrap{flex:1;}
+.hd-title{font-family:'Single Day',sans-serif;font-weight:400;font-size:44px;line-height:1.0;letter-spacing:0px;margin-bottom:0;margin-top:2px;}
+.hd-title em{color:var(--sun);font-style:normal;}
+.hd-sub{font-size:10px;color:rgba(255,255,255,.45);margin-bottom:8px;}
+.hd-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.hd-chip{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:5px 9px;font-size:10px;font-weight:700;}
+.hd-chip.ac{background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.4);color:var(--sun);}
+#cdw{margin-bottom:0;}
+.cd-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:7px;}
+.cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.cd-box{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:9px 4px;text-align:center;}
+.cd-n{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;color:var(--sun);line-height:1;}
+.cd-u{font-size:8px;color:rgba(255,255,255,.38);margin-top:2px;letter-spacing:.5px;}
+.cd-msg{padding:11px 16px;border-radius:8px;font-size:12px;font-weight:700;text-align:center;}
+.cd-live{background:rgba(5,150,105,.18);color:#6ee7b7;border:1px solid rgba(5,150,105,.35);}
+.cd-done{background:rgba(255,255,255,.07);color:rgba(255,255,255,.43);font-size:11px;}
+
+/* ── TABS ── */
+.tab-bar{background:var(--blue-dk);position:sticky;top:0;z-index:200;box-shadow:0 4px 16px rgba(30,64,175,.4);}
+.tabs{display:flex;max-width:680px;margin:0 auto;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:1;min-width:58px;padding:12px 3px;border:none;background:none;font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.38);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;}
+.tab.on{color:var(--sun);border-bottom-color:var(--sun);}
+.tab:hover:not(.on){color:rgba(255,255,255,.7);}
+
+/* ── LAYOUT ── */
+.main{max-width:680px;margin:0 auto;padding:14px;overflow-x:hidden;}
+.panel{display:none;}.panel.on{display:block;}
+.sec-hd{display:flex;align-items:center;gap:8px;font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:18px 0 10px;}
+.sec-hd::after{content:'';flex:1;height:1px;background:var(--border-lt);}
+
+/* ── 공지사항 (크게) ── */
+.nb-wrap{border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:12px;}
+.nb-head{background:linear-gradient(135deg,#7c3aed,#9333ea);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.nb-title{display:flex;align-items:center;gap:8px;color:#fff;font-size:14px;font-weight:900;}
+.nb-refresh{font-size:9px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:4px;}
+.nb-rdot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:bk 2s infinite;}
+.nb-list{background:var(--surface);padding:6px 10px;}
+.nb-empty{padding:20px;text-align:center;color:var(--muted);font-size:13px;}
+.nb-item{display:flex;gap:10px;padding:12px 6px;border-bottom:1px solid var(--border-lt);}
+.nb-item:last-child{border-bottom:none;}
+.nb-icon{width:38px;height:38px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.nb-body{}
+.nb-meta{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.nb-time{font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:#7c3aed;}
+.nb-tag{background:#ede9fe;color:#6d28d9;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;}
+.nb-content{font-size:15px;font-weight:700;color:var(--text);line-height:1.6;}
+
+/* ── 실시간 점수판 ── */
+.ls-wrap{border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:12px;}
+.ls-head{background:linear-gradient(135deg,var(--blue-dk),var(--blue));padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.ls-title{display:flex;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:900;}
+.ls-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444;animation:bk 1.2s infinite;}
+@keyframes bk{0%,100%{opacity:1;}50%{opacity:.25;}}
+.ls-right{display:flex;align-items:center;gap:8px;}
+.ls-time{font-size:10px;color:rgba(255,255,255,.45);}
+.refresh-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;color:#fff;font-size:11px;padding:4px 9px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;transition:background .15s;}
+.refresh-btn:hover{background:rgba(255,255,255,.25);}
+.ls-body{background:var(--surface);}
+.grade-row-wrap{border-bottom:1px solid var(--border-lt);}
+.grade-row-wrap:last-child{border-bottom:none;}
+.gr-label{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#f8faff;}
+.gr-dot{width:9px;height:9px;border-radius:50%;}
+.gr-name{font-size:11px;font-weight:900;color:var(--blue-dk);}
+.gr-sub{font-size:9px;color:var(--muted);}
+.class-rows{padding:4px 10px 8px;}
+.class-row{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:8px;margin-bottom:2px;}
+.class-row.r1{background:linear-gradient(to right,#fefce8,#fff);}
+.class-row.r2{background:#f8fafc;}
+.rk-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;flex-shrink:0;}
+.r1 .rk-badge{background:var(--sun);color:#111;}
+.r2 .rk-badge{background:#e5e7eb;color:#374151;}
+.r3 .rk-badge{background:#fde8d8;color:#7c2d12;}
+.r4 .rk-badge{background:#f1f5f9;color:#9ca3af;}
+.cls-name{font-size:12px;font-weight:900;flex:1;}
+.bar-wrap{flex:1;background:#f1f5f9;border-radius:4px;height:6px;overflow:hidden;max-width:80px;}
+.bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue-dk),var(--blue-lt));transition:width .6s;}
+.pts-val{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;color:var(--blue-dk);min-width:46px;text-align:right;}
+.pts-val.top{color:var(--sun-dk);}
+.ls-empty{padding:20px;text-align:center;color:var(--muted);font-size:12px;}
+
+/* ── SCHEDULE ── */
+.tbl-wrap{overflow-x:auto;border-radius:12px;box-shadow:var(--sh);margin-bottom:10px;}
+.stbl2{width:100%;border-collapse:collapse;background:var(--surface);font-size:11px;}
+.stbl2 thead tr{background:var(--blue-dk);}
+.stbl2 thead th{padding:9px 5px;text-align:left;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.55);white-space:nowrap;}
+.stbl2 thead th.c{text-align:center;}
+.sr{border-bottom:1px solid #f3f4f6;border-left:4px solid transparent;}
+.sr:last-child{border-bottom:none;}
+.sr:hover{background:#f9fafb;}
+.rc{border-left-color:var(--sun-dk);background:#fffdf5;}
+.re{border-left-color:var(--blue-lt);}
+.rb{border-left-color:var(--ok);background:#f6fdf9;}
+.rce{border-left-color:#9d174d;}
+.rp{border-left-color:#d1d5db;background:#fafafa;}
+.rn{border-left-color:var(--err)!important;background:#fff8f5!important;}
+.stbl2 tbody td{padding:7px 5px;vertical-align:middle;}
+.td-n{text-align:center;font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;color:var(--muted);width:20px;}
+.td-t{font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;color:var(--blue-dk);white-space:nowrap;}
+.td-d{text-align:center;font-size:10px;color:var(--muted);}
+.rt{font-size:12px;font-weight:800;display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.rsb{font-size:9px;color:var(--muted);margin-top:2px;}
+.tc{background:var(--sun-pale);color:var(--sun-deep);padding:1px 5px;border-radius:3px;font-size:8px;font-weight:900;}
+.tn{display:inline-flex;align-items:center;gap:3px;background:#fee2e2;color:#991b1b;padding:2px 5px;border-radius:4px;font-size:8px;font-weight:700;}
+.nbk{width:5px;height:5px;border-radius:50%;background:var(--err);animation:bk 1s infinite;}
+.td-who{display:none;}
+@media(min-width:500px){.td-who{display:table-cell;font-size:10px;color:var(--muted);white-space:nowrap;}}
+.leg-wrap{display:flex;gap:12px;flex-wrap:wrap;padding:6px 2px;}
+.li{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);}
+.lb{width:14px;height:3px;border-radius:2px;}
+
+/* ── EVENTS ── */
+.ev-list{display:flex;flex-direction:column;gap:10px;}
+.ev-card{background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--sh);}
+.ev-hd{display:flex;align-items:center;gap:12px;padding:12px 14px;background:linear-gradient(135deg,var(--blue-pale),#f0f7ff);border-bottom:1px solid var(--border);}
+.ev-ico{font-size:28px;}
+.ev-nm{font-size:15px;font-weight:900;color:var(--blue-dk);}
+.ev-sb{font-size:10px;color:var(--muted);margin-top:2px;}
+.ev-bd{padding:12px 14px;display:grid;grid-template-columns:64px 1fr;gap:7px 10px;font-size:12px;}
+.ev-lb{font-size:10px;font-weight:700;color:var(--muted);padding-top:1px;line-height:1.5;}
+.ev-vl{line-height:1.6;}
+.ev-tip{color:var(--blue);font-weight:500;}
+.pts-row{display:flex;gap:4px;flex-wrap:wrap;}
+.pt{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;}
+.pt1{background:var(--sun-pale);color:var(--sun-deep);}
+.pt2{background:#f3f4f6;color:#374151;}
+.pt3{background:#fde8d8;color:#7c2d12;}
+.pt4{background:#f9fafb;color:#9ca3af;}
+
+/* ── SCORE DETAIL ── */
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:9px;margin-bottom:10px;font-size:11px;}
+.sbar-l{display:flex;align-items:center;gap:7px;color:#0c4a6e;font-weight:700;}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:bk 2s infinite;}
+.grade-blk{margin-bottom:16px;}
+.ghd{display:flex;align-items:center;padding:9px 13px;border-radius:9px 9px 0 0;color:#fff;font-size:13px;font-weight:900;gap:8px;}
+.g1h{background:linear-gradient(90deg,#1d4ed8,#3b82f6);}
+.g2h{background:linear-gradient(90deg,#6d28d9,#8b5cf6);}
+.g3h{background:linear-gradient(90deg,#991b1b,#dc2626);}
+.dtbl-wrap{overflow-x:auto;}
+.dtbl{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 9px 9px;font-size:10px;}
+.dtbl th{background:#f8faff;padding:6px 3px;font-size:8px;font-weight:700;color:var(--muted);text-align:center;border-bottom:1px solid var(--border);line-height:1.4;white-space:nowrap;}
+.dtbl td{padding:7px 3px;text-align:center;border-bottom:1px solid #f3f4f6;vertical-align:middle;}
+.dtbl tr:last-child td{border-bottom:none;}
+.td-cls{text-align:left!important;padding-left:10px!important;font-size:12px;font-weight:900;}
+.td-total{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;color:var(--blue-dk);}
+.rb2{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:8px;font-weight:900;}
+.rb21{background:var(--sun-pale);color:var(--sun-deep);}
+.rb22{background:#e5e7eb;color:#374151;}
+.rb23{background:#fde8d8;color:#7c2d12;}
+.rb24{background:#f1f5f9;color:#9ca3af;}
+.rbn{color:#d1d5db;font-size:11px;}
+.rowg{background:#fffef0;}.rows{background:#fafafa;}
+
+/* ── SONG ── */
+.sf{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:16px;margin-bottom:12px;box-shadow:var(--sh);}
+.sf-ttl{font-size:14px;font-weight:900;color:var(--blue-dk);padding-bottom:12px;border-bottom:1px solid var(--border-lt);margin-bottom:13px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+.flbl{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.fsel,.finp{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);background:#fafeff;transition:border-color .15s;-webkit-appearance:none;}
+.fsel:focus,.finp:focus{outline:none;border-color:var(--blue);}
+.fsel:disabled{opacity:.45;cursor:not-allowed;}
+.sbtn{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--blue-dk),var(--blue));color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;border-bottom:3px solid rgba(0,0,0,.2);}
+.sbtn:hover{opacity:.88;}.sbtn:disabled{opacity:.4;cursor:not-allowed;}
+.slhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.slttl{font-size:13px;font-weight:900;}
+.abadge{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);background:#f1f5f9;padding:4px 9px;border-radius:8px;}
+.adot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:bk 2s infinite;}
+.song-card{background:var(--surface);border-radius:10px;border:1px solid var(--border);padding:10px 13px;margin-bottom:7px;display:flex;align-items:center;gap:11px;box-shadow:0 1px 4px rgba(29,78,216,.06);}
+.snum{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:var(--sun-dk);min-width:26px;text-align:center;}
+.sttl{font-size:13px;font-weight:700;}
+.sartist{font-size:11px;color:var(--muted);margin-top:1px;}
+.smeta{font-size:10px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px;}
+.cdot{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;color:#fff;}
+
+/* ── INFO ── */
+.ic{background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:10px;box-shadow:0 1px 6px rgba(29,78,216,.06);}
+.ich{padding:10px 14px;background:var(--blue-pale);border-bottom:1px solid var(--border);font-size:12px;font-weight:900;color:var(--blue-dk);}
+.icb{padding:12px 14px;}
+.ilist{list-style:none;}
+.ilist li{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border-lt);font-size:12px;line-height:1.5;}
+.ilist li:last-child{border-bottom:none;}
+.ilist li::before{content:'—';color:var(--blue);font-weight:900;flex-shrink:0;}
+.wbox{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:13px 14px;margin-bottom:10px;}
+.wttl{font-size:11px;font-weight:900;color:var(--sun-deep);margin-bottom:8px;}
+.ptbl{width:100%;border-collapse:collapse;font-size:12px;}
+.ptbl th{background:var(--blue-pale);padding:7px 8px;font-size:10px;font-weight:700;color:var(--blue-dk);border-bottom:1px solid var(--border);}
+.ptbl td{padding:7px 8px;border-bottom:1px solid var(--border-lt);text-align:center;}
+.ptbl tr:last-child td{border-bottom:none;}
+.prank{text-align:left!important;font-weight:700;}
+.pamt{font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:var(--blue-dk);}
+
+/* 자리배치도 */
+.seat-container{border:2px solid #1e40af;border-radius:10px;overflow:hidden;background:#fff;}
+.seat-field{background:#f8f9fb;height:160px;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:2px solid #1e40af;}
+.seat-gate{position:absolute;top:0;right:0;width:70px;height:100%;background:#1e40af;display:flex;flex-direction:column;align-items:center;padding:10px 5px;gap:8px;border-left:2px solid #1e40af;}
+.seat-gate-label{font-size:14px;font-weight:900;color:#fff;}
+.seat-gate-img{background:rgba(255,255,255,.15);border-radius:6px;width:50px;height:100px;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.field-text{font-family:'Black Han Sans',sans-serif;font-size:32px;color:#374151;letter-spacing:4px;}
+.stand-section{background:#fff;}
+.stand-header{display:flex;background:white;}
+.stand-hd-left{flex:4;background:#1e40af;display:flex;align-items:center;justify-content:center;padding:8px;font-size:12px;font-weight:900;color:#fff;letter-spacing:2px;}
+.stand-hd-mid{width:70px;background:#4d7c0f;display:flex;align-items:center;justify-content:center;padding:8px;font-size:12px;font-weight:900;color:#fff;flex-shrink:0;}
+.stand-hd-right{flex:7;background:#1e40af;display:flex;align-items:center;justify-content:center;padding:8px;font-size:12px;font-weight:900;color:#fff;letter-spacing:2px;}
+.stand-hd-water{width:70px;background:#fef9c3;display:flex;align-items:center;justify-content:center;padding:8px;font-size:11px;font-weight:900;color:#713f12;flex-shrink:0;}
+.seat-row{display:flex;border-top:1px solid #e5e7eb;}
+.seat-cell{flex:1;border-right:1px solid #e5e7eb;padding:14px 4px;text-align:center;font-size:15px;font-weight:900;color:#374151;}
+.seat-cell:last-child{border-right:none;}
+.seat-cell.mid{background:#f0fdf4;width:70px;flex:none;border-right:1px solid #e5e7eb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.seat-cell.water{background:#fefce8;width:70px;flex:none;font-size:13px;color:#713f12;display:flex;align-items:center;justify-content:center;}
+.flag-icon{font-size:22px;line-height:1;}
+.flag-base{width:32px;height:4px;background:#4d7c0f;border-radius:2px;}
+
+/* UTILS */
+.err-box{background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:10px 13px;font-size:11px;color:#991b1b;margin:8px 0;}
+.ld{text-align:center;padding:22px;color:var(--muted);font-size:12px;}
+.spin{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;margin-bottom:5px;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);padding:9px 20px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.tok{background:var(--blue-dk);color:var(--sun);}
+.terr{background:#7f1d1d;color:#fecaca;}
+@media(max-width:400px){.hd-title{font-size:32px;}.cd-n{font-size:22px;}.fg2,.fg3{grid-template-columns:1fr 1fr;}.fg3{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<script>
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxuMn66YwNX2CE91R0XPgH19A1qkhCemZCIhsgsMclCu44VNpOMxvW1aD-uyrRIPatK/exec';
+</script>
+
+<!-- HEADER -->
+<div class="hd">
+  <div class="hd-inner">
+    <!-- badge만 상단에 -->
+    <div class="hd-badge" style="margin-bottom:4px;">🏅 Sports Day 2026</div>
+    <!-- 제목 + 날씨 나란히 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <div class="hd-title" style="flex:1;">광평중학교<br><em>체육한마당</em></div>
+      <div class="weather-box" id="weather-box">
+        <div class="weather-icon">⏳</div>
+        <div class="weather-temp">--°</div>
+        <div class="weather-desc">로딩 중</div>
+        <div class="weather-loc">6월4일(목) 구미</div>
+      </div>
+    </div>
+    <div class="hd-sub">도전하는 우리, 빛나는 청춘!</div>
+    <div class="hd-chips">
+      <div class="hd-chip">📅 2026. 6. 4 목</div>
+      <div class="hd-chip">⏰ 09:00 ~ 15:30</div>
+      <div class="hd-chip ac">📍 운동장 · 강당</div>
+    </div>
+    <div id="cdw"></div>
+  </div>
+  <div class="hd-deco"></div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <div class="tabs">
+    <button class="tab on" data-p="home"     onclick="go(this)">🏠 홈</button>
+    <button class="tab"    data-p="schedule" onclick="go(this)">📅 일정</button>
+    <button class="tab"    data-p="events"   onclick="go(this)">🏅 종목</button>
+    <button class="tab"    data-p="score"    onclick="go(this)">📊 점수판</button>
+    <button class="tab"    data-p="song"     onclick="go(this)">🎵 신청곡</button>
+    <button class="tab"    data-p="info"     onclick="go(this)">📋 안내</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ① 홈: 공지 먼저, 점수 나중 -->
+<div id="p-home" class="panel on">
+
+  <!-- 공지사항 (먼저) -->
+  <div class="sec-hd">공지사항</div>
+  <div class="nb-wrap">
+    <div class="nb-head">
+      <div class="nb-title">📢 공지사항</div>
+      <div class="nb-refresh"><div class="nb-rdot"></div>15초 자동갱신</div>
+    </div>
+    <div class="nb-list" id="nb-list">
+      <div class="ld"><div class="spin"></div><br>공지 불러오는 중...</div>
+    </div>
+  </div>
+
+  <!-- 실시간 점수판 (나중) -->
+  <div class="sec-hd">실시간 점수판</div>
+  <div class="ls-wrap">
+    <div class="ls-head">
+      <div class="ls-title"><div class="ls-dot"></div>실시간 점수판</div>
+      <div class="ls-right">
+        <div class="ls-time" id="ls-time">-</div>
+        <button class="refresh-btn" onclick="fetchScores()">🔄 새로고침</button>
+      </div>
+    </div>
+    <div class="ls-body" id="ls-body">
+      <div class="ld"><div class="spin"></div><br>점수 불러오는 중...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ② 일정 -->
+<div id="p-schedule" class="panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;">
+    <div class="sec-hd" style="margin:0;">대회 세부 일정</div>
+    <!-- 명단 버튼 자리 (다음주 명단 PDF 업로드 후 추가 예정) -->
+    <div id="roster-btn-area"></div>
+  </div>
+  <div id="tl-wrap" style="padding:4px 2px 10px;"></div>
+  <div class="leg-wrap">
+    <div class="li"><div class="lb" style="background:var(--blue);border-radius:0"></div>경쟁종목</div>
+    <div class="li"><div class="lb" style="background:var(--muted);border-radius:0"></div>이벤트</div>
+    <div class="li"><div class="lb" style="background:var(--ok);border-radius:0"></div>휴식·식사</div>
+    <div class="li"><div class="lb" style="background:#9d174d;border-radius:0"></div>식행사</div>
+  </div>
+</div>
+
+<!-- ③ 종목 -->
+<div id="p-events" class="panel">
+  <div class="sec-hd">종목 상세 안내</div>
+  <div class="ev-list" id="ev-list"></div>
+</div>
+
+<!-- ④ 점수판 -->
+<div id="p-score" class="panel">
+  <div class="sec-hd">점수판 상세</div>
+  <div class="sbar">
+    <div class="sbar-l"><div class="pulse"></div>Sheets 연동 · 순위 입력 → 점수 자동합산</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span id="score-dt-time" style="font-size:10px;color:var(--muted);">-</span>
+      <button class="refresh-btn" style="background:var(--blue-pale);border:1px solid var(--border);color:var(--blue-dk);" onclick="fetchScores()">🔄</button>
+    </div>
+  </div>
+  <div id="score-detail"></div>
+</div>
+
+<!-- ⑤ 신청곡 -->
+<div id="p-song" class="panel">
+  <div class="sec-hd">노래 신청</div>
+  <div class="sf">
+    <div class="sf-ttl">🎵 신청곡 보내기 · 1인 1곡</div>
+    <!-- 학년/반/이름 3칸 -->
+    <div class="fg3">
+      <div><div class="flbl">학 년</div>
+        <select class="fsel" id="f-grade" onchange="updateCls()">
+          <option value="">학년</option>
+          <option>1</option><option>2</option><option>3</option>
+        </select>
+      </div>
+      <div><div class="flbl">반</div>
+        <select class="fsel" id="f-cls" disabled><option value="">반</option></select>
+      </div>
+      <div><div class="flbl">이 름</div>
+        <input class="finp" id="f-name" type="text" placeholder="이름" maxlength="10">
+      </div>
+    </div>
+    <!-- 가수/곡명 2칸 -->
+    <div class="fg2">
+      <div><div class="flbl">가 수</div>
+        <input class="finp" id="f-artist" type="text" placeholder="가수명" maxlength="30">
+      </div>
+      <div><div class="flbl">곡 명</div>
+        <input class="finp" id="f-song" type="text" placeholder="곡명" maxlength="40"
+               onkeydown="if(event.key==='Enter')submitSong()">
+      </div>
+    </div>
+    <button class="sbtn" id="song-btn" onclick="submitSong()">🎤 신청하기</button>
+  </div>
+  <div class="slhd">
+    <div class="slttl">📋 신청곡 목록</div>
+    <div class="abadge"><div class="adot"></div>5초 자동갱신</div>
+  </div>
+  <div id="song-list"></div>
+</div>
+
+<!-- ⑥ 안내 -->
+<div id="p-info" class="panel"><div id="info-body"></div></div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* DATA */
+const EVT_DATE=new Date('2026-06-04T09:00:00'),EVT_END=new Date('2026-06-04T15:30:00');
+const GRADES=[
+  {id:'g1',name:'1학년',hc:'g1h',color:'#1d4ed8',classes:['1-1','1-2','1-3','1-4'],maxRank:4},
+  {id:'g2',name:'2학년',hc:'g2h',color:'#7c3aed',classes:['2-1','2-2','2-3'],maxRank:3},
+  {id:'g3',name:'3학년',hc:'g3h',color:'#b91c1c',classes:['3-1','3-2','3-3','3-4'],maxRank:4},
+];
+const CLS_MAP={'1':['1-1','1-2','1-3','1-4'],'2':['2-1','2-2','2-3'],'3':['3-1','3-2','3-3','3-4']};
+const GC={'1':'#1d4ed8','2':'#7c3aed','3':'#b91c1c'};
+const PTS={1:100,2:80,3:60,4:40};
+const EVTS=[
+  {id:'pipe', icon:'🪣',name:'파이프\n공전달',  fname:'파이프공전달',  time:'09:35',dur:25,players:'반당 10명+공줍기 1명',rule:'파이프 8세트로 공 전달, 출발→골인',tip:'속도보다 안정감!',prep:'파이프 8세트(20개), 라인기'},
+  {id:'ball', icon:'🏐',name:'협동\n공튀기기',  fname:'협동공튀기기',  time:'10:00',dur:25,players:'반당 8명+공줍기 1명',rule:'1분 2번 기회, 횟수 합산',tip:'원 대형 + 일정한 리듬',prep:'공튀기기 4개, 카운터 4개'},
+  {id:'centi',icon:'🦶',name:'지네발\n달리기',  fname:'지네발달리기',  time:'10:25',dur:25,players:'반당 12명 (6명×2회)',rule:'지네발 착용 후 왕복, 2회 합산',tip:'"하나 둘" 구령 필수!',prep:'지네발 4개, 조끼 4개'},
+  {id:'rope', icon:'🪢',name:'단체\n줄넘기',    fname:'단체줄넘기',    time:'11:10',dur:25,players:'반당 10명 (줄잡이 2명)',rule:'1분 2번 기회, 횟수 합산',tip:'줄잡이 리듬이 핵심',prep:'줄넘기 4개, 카운터 4개'},
+  {id:'hula', icon:'⭕',name:'훌라후프\n넘기기',fname:'훌라후프넘기기',time:'11:35',dur:20,players:'반당 8명',rule:'훌라후프 팀 협동 경기',tip:'타이밍과 팀 호흡!',prep:'훌라후프 4개'},
+  {id:'relay',icon:'🏃',name:'이어\n달리기',    fname:'이어달리기',    time:'11:55',dur:35,players:'반당 남3명+여3명',rule:'여(1·3·5번)→남(2·4·6번) 반바퀴씩',tip:'바톤 전달 연습 필수!',prep:'바톤 4개, 라인기, 라바콘, 조끼 4개'},
+];
+const SCHED=[
+  {n:1, s:'08:50',e:'09:00',dur:10, t:'좌석배치 및 집합',  i:'📍',w:'전교생',    tp:'rp'},
+  {n:2, s:'09:00',e:'09:10',dur:10, t:'개회식 및 안전교육',i:'🎤',w:'전교생',    tp:'rce'},
+  {n:3, s:'09:10',e:'09:15',dur:5,  t:'준비운동 체조',     i:'🤸',w:'전교생',    tp:'rp'},
+  {n:4, s:'09:15',e:'09:35',dur:20, t:'입장식',            i:'🚩',w:'전교생',    tp:'re',o:'1→2→3학년'},
+  {n:5, s:'09:35',e:'10:00',dur:25, t:'파이프공전달',      i:'🪣',w:'반당 10명', tp:'rc',o:'1→2→3학년',comp:1},
+  {n:6, s:'10:00',e:'10:25',dur:25, t:'협동공튀기기',      i:'🏐',w:'반당 8명',  tp:'rc',o:'1→2→3학년',comp:1},
+  {n:7, s:'10:25',e:'10:50',dur:25, t:'지네발달리기',      i:'🦶',w:'반당 12명', tp:'rc',o:'1→2→3학년',comp:1},
+  {n:8, s:'10:50',e:'11:10',dur:20, t:'OX 퀴즈',          i:'❓',w:'전교생',    tp:'re',note:'문화상품권 경품 🎁'},
+  {n:9, s:'11:10',e:'11:35',dur:25, t:'단체줄넘기',        i:'🪢',w:'반당 10명', tp:'rc',o:'1→2→3학년',comp:1},
+  {n:10,s:'11:35',e:'11:55',dur:20, t:'훌라후프넘기기',    i:'⭕',w:'반당 8명',  tp:'rc',o:'1→2→3학년',comp:1},
+  {n:11,s:'11:55',e:'12:30',dur:35, t:'이어달리기',        i:'🏃',w:'남3+여3명', tp:'rc',o:'1→2→3학년',comp:1},
+  {n:12,s:'12:30',e:'13:30',dur:60, t:'점심시간',          i:'🍱',w:'전교생',    tp:'rb',note:'랜덤플레이 댄스'},
+  {n:13,s:'13:30',e:'13:40',dur:10, t:'축하공연 (댄스부)', i:'💃',w:'댄스동아리',tp:'re',note:'강당'},
+  {n:14,s:'13:40',e:'15:20',dur:100,t:'레크리에이션',      i:'🎉',w:'전교생',    tp:'re',note:'MC 진행'},
+  {n:15,s:'15:20',e:'15:30',dur:10, t:'시상 및 폐회식',   i:'🏆',w:'전교생',    tp:'rce',note:'강당'},
+  {n:16,s:'15:30',e:'',     dur:0,  t:'주변 정리',         i:'🧹',w:'전교생',    tp:'rp'},
+];
+
+/* COUNTDOWN */
+function tick(){
+  const now=new Date(),diff=EVT_DATE-now;
+  const el=document.getElementById('cdw');if(!el)return;
+  if(diff<=0){el.innerHTML=now<EVT_END?`<div class="cd-msg cd-live">🔴 지금 체육한마당 진행 중!</div>`:`<div class="cd-msg cd-done">✅ 2026 체육한마당이 성공적으로 마무리되었습니다!</div>`;return;}
+  const p=n=>String(n).padStart(2,'0');
+  const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+  el.innerHTML=`<div class="cd-lbl">D-DAY COUNTDOWN</div><div class="cd-grid">
+    <div class="cd-box"><div class="cd-n">${d}</div><div class="cd-u">일</div></div>
+    <div class="cd-box"><div class="cd-n">${p(h)}</div><div class="cd-u">시간</div></div>
+    <div class="cd-box"><div class="cd-n">${p(m)}</div><div class="cd-u">분</div></div>
+    <div class="cd-box"><div class="cd-n">${p(s)}</div><div class="cd-u">초</div></div>
+  </div>`;
+}
+
+/* WEATHER - 구미 6월 4일 */
+async function fetchWeather(){
+  try{
+    // Open-Meteo 무료 API - 구미 좌표
+    const url='https://api.open-meteo.com/v1/forecast?latitude=36.1196&longitude=128.3445&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Asia/Seoul&start_date=2026-06-04&end_date=2026-06-04';
+    const res=await fetch(url);
+    const d=await res.json();
+    const code=d.daily?.weathercode?.[0]??0;
+    const tmax=Math.round(d.daily?.temperature_2m_max?.[0]??0);
+    const tmin=Math.round(d.daily?.temperature_2m_min?.[0]??0);
+    const {icon,desc}=wIcon(code);
+    document.getElementById('weather-box').innerHTML=`
+      <div class="weather-icon">${icon}</div>
+      <div class="weather-temp">${tmax}°</div>
+      <div class="weather-desc">${desc}</div>
+      <div class="weather-loc">구미 6.4</div>`;
+  }catch(e){
+    document.getElementById('weather-box').innerHTML=`
+      <div class="weather-icon">🌤</div>
+      <div class="weather-temp">--°</div>
+      <div class="weather-desc">확인 중</div>
+      <div class="weather-loc">6월4일(목) 구미</div>`;
+  }
+}
+function wIcon(code){
+  if(code===0) return {icon:'🌞',desc:'맑음'};
+  if(code<=2)  return {icon:'🌤️',desc:'대체로 맑음'};
+  if(code<=3)  return {icon:'⛅',desc:'구름 조금'};
+  if(code<=48) return {icon:'☁️',desc:'흐림'};
+  if(code<=67) return {icon:'🌦️',desc:'비'};
+  if(code<=77) return {icon:'🌨️',desc:'눈'};
+  if(code<=82) return {icon:'🌧️',desc:'소나기'};
+  return {icon:'⛈️',desc:'뇌우'};
+}
+
+/* SCHEDULE */
+function curIdx(){const now=new Date();if(now.toDateString()!==EVT_DATE.toDateString())return -1;let c=-1;SCHED.forEach((r,i)=>{const[h,mo]=r.s.split(':').map(Number);const t=new Date(EVT_DATE);t.setHours(h,mo,0,0);if(now>=t)c=i;});return c;}
+function renderSched(){
+  const ci=curIdx();
+  // 타입별 색상
+  const TC={
+    rc:{t:'#1d4ed8',l:'#bfdbfe',tag:'경쟁',tc:'#dbeafe',ttc:'#1e40af'},
+    re:{t:'#6b7280',l:'#e5e7eb',tag:'이벤트',tc:'#f3f4f6',ttc:'#374151'},
+    rb:{t:'#059669',l:'#a7f3d0',tag:'휴식',tc:'#d1fae5',ttc:'#065f46'},
+    rce:{t:'#9d174d',l:'#fbcfe8',tag:'식행사',tc:'#fce7f3',ttc:'#831843'},
+    rp:{t:'#9ca3af',l:'#e5e7eb',tag:'',tc:'',ttc:''},
+  };
+  document.getElementById('tl-wrap').innerHTML=SCHED.map((r,i)=>{
+    const isNow=i===ci;
+    const c=TC[r.tp]||TC.rp;
+    const isLast=i===SCHED.length-1;
+    return `<div style="display:flex;gap:14px;${isLast?'':''}">
+      <div style="display:flex;flex-direction:column;align-items:center;min-width:54px;flex-shrink:0;">
+        <div style="font-size:14px;font-weight:700;color:${isNow?'#dc2626':c.t};white-space:nowrap;${isNow?'animation:bk 1s infinite;':''}">${r.s}</div>
+        ${!isLast?`<div style="width:2px;background:${c.l};flex:1;margin-top:5px;min-height:24px;"></div>`:''}
+      </div>
+      <div style="padding-bottom:${isLast?'4':'18'}px;flex:1;">
+        ${isNow?`<div style="display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#991b1b;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:700;margin-bottom:4px;"><span style="width:6px;height:6px;border-radius:50%;background:#dc2626;animation:bk 1s infinite;display:inline-block;"></span>진행 중</div><br>`:''}
+        <div style="font-size:15px;font-weight:700;color:${isNow?'#dc2626':'#111827'};line-height:1.3;">${r.i} ${r.t}</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:3px;">${r.w}${r.dur>0?' · '+r.dur+'분':''}${r.e?' · ~'+r.e:''}</div>
+        ${r.o?`<div style="font-size:11px;color:#9ca3af;margin-top:2px;">📋 ${r.o}</div>`:''}
+        ${r.note?`<div style="font-size:11px;color:#9ca3af;margin-top:2px;">💡 ${r.note}</div>`:''}
+        <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;">
+          ${r.comp?`<span style="font-size:11px;font-weight:700;background:${c.tc};color:${c.ttc};border-radius:5px;padding:2px 9px;">경쟁</span>`:''}
+          ${c.tag&&!r.comp?`<span style="font-size:11px;font-weight:700;background:${c.tc};color:${c.ttc};border-radius:5px;padding:2px 9px;">${c.tag}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* EVENTS */
+function renderEvents(){
+  document.getElementById('ev-list').innerHTML=EVTS.map(ev=>`
+    <div class="ev-card">
+      <div class="ev-hd"><div class="ev-ico">${ev.icon}</div>
+        <div><div class="ev-nm">${ev.fname}</div><div class="ev-sb">⏰ ${ev.time} · ${ev.dur}분 · 배점 100/80/60/40</div></div>
+      </div>
+      <div class="ev-bd">
+        <div class="ev-lb">👥 참가</div><div class="ev-vl">${ev.players}</div>
+        <div class="ev-lb">📋 방식</div><div class="ev-vl">${ev.rule}</div>
+        <div class="ev-lb">💡 팁</div><div class="ev-vl ev-tip">${ev.tip}</div>
+        <div class="ev-lb">🎯 배점</div><div class="ev-vl"><div class="pts-row"><span class="pt pt1">🥇 1위 100</span><span class="pt pt2">🥈 2위 80</span><span class="pt pt3">🥉 3위 60</span><span class="pt pt4">4위 40</span></div></div>
+        <div class="ev-lb">🔧 준비물</div><div class="ev-vl" style="color:var(--muted);font-size:11px;">${ev.prep}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* SCORES */
+function getTotal(obj){return(obj&&typeof obj.total==='number')?obj.total:EVTS.reduce((s,ev)=>s+(PTS[obj&&obj[ev.id]]||0),0);}
+
+function renderScoreHome(gs){
+  const byC={};(gs||[]).forEach(s=>byC[s.cls]=s);
+  if(!gs||!gs.length){
+    document.getElementById('ls-body').innerHTML=`<div class="ls-empty">📊 아직 점수가 없습니다<br><span style="font-size:10px;color:var(--muted)">점수 시트 B~G열에 순위(1~4)를 입력하세요</span></div>`;
+    return;
+  }
+  document.getElementById('ls-body').innerHTML=GRADES.map(g=>{
+    // 등수 계산 (점수 기준 정렬로 순위만 구함)
+    const sorted=[...g.classes].sort((a,b)=>getTotal(byC[b])-getTotal(byC[a]));
+    const rkOf={};sorted.forEach((c,i)=>rkOf[c]=i+1);
+
+    // 표시는 반 번호 순서 그대로 (1-1, 1-2, 1-3...)
+    const items=g.classes.map(c=>{
+      const t=getTotal(byC[c]),rk=rkOf[c];
+      const medal=rk===1?'🥇':rk===2?'🥈':rk===3?'🥉':'';
+      const rkBg  =rk===1?'#f59e0b':rk===2?'#e5e7eb':rk===3?'#fde8d8':'#f1f5f9';
+      const rkTxt =rk===1?'#111'   :rk===2?'#374151':rk===3?'#7c2d12':'#9ca3af';
+      const rowBg =rk===1?'#fffbeb':'var(--color-background-secondary)';
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:${rowBg};margin-bottom:4px;">
+        <div style="font-size:13px;font-weight:700;flex:1;color:var(--color-text-primary);">${c}</div>
+        <div style="font-size:13px;color:var(--color-text-secondary);">${t}점</div>
+        <div style="display:flex;align-items:center;gap:3px;background:${rkBg};color:${rkTxt};font-size:12px;font-weight:700;border-radius:6px;padding:4px 10px;min-width:58px;justify-content:center;">
+          ${medal?`<span style="font-size:15px;line-height:1;margin-right:2px;">${medal}</span>`:''}${rk}위
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="grade-row-wrap">
+      <div class="gr-label"><div class="gr-dot" style="background:${g.color}"></div><div class="gr-name">${g.name}</div><div class="gr-sub">${g.classes.length}개반</div></div>
+      <div style="padding:6px 10px 8px;">${items}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderScoreDetail(gs){
+  const byC={};(gs||[]).forEach(s=>byC[s.cls]=s);
+  // 점수판 헤더: 이모지 + 한글 두줄
+  document.getElementById('score-detail').innerHTML=GRADES.map(g=>{
+    const rows=g.classes.map(c=>({c,t:getTotal(byC[c])})).sort((a,b)=>b.t-a.t);
+    const rkOf={};rows.forEach((r,i)=>rkOf[r.c]=i+1);
+    const ths=EVTS.map(ev=>{
+      const lines=ev.name.split('\n');
+      return `<th>${ev.icon}<br><span style="font-size:8px;line-height:1.4">${lines[0]}<br>${lines[1]||''}</span></th>`;
+    }).join('');
+    const trs=g.classes.map(c=>{
+      const obj=byC[c]||null,t=getTotal(obj),rk=rkOf[c];
+      const cells=EVTS.map(ev=>{
+        const rank=obj&&obj[ev.id];
+        const pts=rank?PTS[rank]:0;
+        return rank
+          ?`<td><span class="rb2 rb2${rank}">${rank}위</span><span style="display:block;font-size:8px;color:var(--muted)">${pts}점</span></td>`
+          :`<td><span class="rbn">—</span></td>`;
+      }).join('');
+      return `<tr class="${rk===1?'rowg':rk===2?'rows':''}">
+        <td class="td-cls">${c}</td>${cells}
+        <td>${t>0?`<span class="td-total">${t}</span>`:''}</td>
+        <td>${t>0?`<span class="rb2 rb2${rk}">${rk}위</span>`:''}</td>
+      </tr>`;
+    }).join('');
+    return `<div class="grade-blk">
+      <div class="ghd ${g.hc}">${g.name}<span style="font-size:9px;opacity:.6;margin-left:6px;">1위=100·2위=80·3위=60·4위=40</span></div>
+      <div class="dtbl-wrap"><table class="dtbl">
+        <thead><tr><th style="text-align:left;padding-left:8px;">반</th>${ths}<th>합계</th><th>순위</th></tr></thead>
+        <tbody>${trs}</tbody>
+      </table></div>
+    </div>`;
+  }).join('');
+}
+
+async function fetchScores(){
+  try{
+    const res=await fetch(`${GAS_URL}?action=scores`,{cache:'no-store'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    if(data.error){
+      const msg=`⚠️ ${data.error}`;
+      document.getElementById('ls-body').innerHTML=`<div class="err-box">${msg}</div>`;
+      document.getElementById('score-detail').innerHTML=`<div class="err-box">${msg}</div>`;
+      return;
+    }
+    const t=nowt();
+    renderScoreHome(data.scores||[]);
+    renderScoreDetail(data.scores||[]);
+    document.getElementById('ls-time').textContent=t;
+    document.getElementById('score-dt-time').textContent=t;
+  }catch(e){
+    const msg=`⚠️ 점수 연결 오류: ${e.message}`;
+    const guide=`<small style="display:block;margin-top:6px;color:#6b7280">📌 GAS 새 배포 후 URL 갱신 필요<br>Apps Script → 배포 → 새 배포 → URL 복사</small>`;
+    document.getElementById('ls-body').innerHTML=`<div class="err-box">${msg}${guide}</div>`;
+    document.getElementById('score-detail').innerHTML=`<div class="err-box">${msg}${guide}</div>`;
+  }
+}
+
+/* NOTICES */
+async function fetchNotices(){
+  try{
+    const res=await fetch(`${GAS_URL}?action=notices`,{cache:'no-store'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    renderNotices(data.notices||[]);
+  }catch(e){
+    document.getElementById('nb-list').innerHTML=`<div class="err-box">⚠️ 공지 오류: ${e.message}</div>`;
+  }
+}
+function renderNotices(notices){
+  if(!notices.length){
+    document.getElementById('nb-list').innerHTML=`<div class="nb-empty">📢 아직 공지가 없습니다<br><span style="font-size:11px;color:var(--muted)">공지 시트 B열에 입력하면 표시됩니다</span></div>`;
+    return;
+  }
+  document.getElementById('nb-list').innerHTML=notices.map(n=>`
+    <div class="nb-item">
+      <div class="nb-icon">📢</div>
+      <div class="nb-body">
+        <div class="nb-meta"><span class="nb-time">${x(n.time)}</span><span class="nb-tag">공지</span></div>
+        <div class="nb-content">${x(n.content)}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* SONGS */
+function updateCls(){
+  const g=document.getElementById('f-grade').value;
+  const sel=document.getElementById('f-cls');
+  sel.innerHTML='<option value="">반</option>';
+  if(g&&CLS_MAP[g]){CLS_MAP[g].forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c.split('-')[1]+'반';sel.appendChild(o);});sel.disabled=false;}
+  else sel.disabled=true;
+}
+
+async function submitSong(){
+  const cls=document.getElementById('f-cls').value;
+  const name=document.getElementById('f-name').value.trim();
+  const artist=document.getElementById('f-artist').value.trim();
+  const song=document.getElementById('f-song').value.trim();
+  if(!cls){toast('반을 선택해주세요!',true);return;}
+  if(!name){toast('이름을 입력해주세요!',true);return;}
+  if(!song){toast('곡명을 입력해주세요!',true);return;}
+  const btn=document.getElementById('song-btn');
+  btn.disabled=true;btn.textContent='전송 중...';
+  try{
+    const res=await fetch(`${GAS_URL}?action=addSong&cls=${enc(cls)}&name=${enc(name)}&artist=${enc(artist)}&song=${enc(song)}`,{cache:'no-store'});
+    const data=await res.json();
+    if(data.error)toast('⚠️ '+data.error,true);
+    else{
+      ['f-grade','f-name','f-artist','f-song'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('f-cls').innerHTML='<option value="">반</option>';
+      document.getElementById('f-cls').disabled=true;
+      toast('🎵 신청 완료!',false);fetchSongs();
+    }
+  }catch(e){toast('⚠️ 신청 실패. 다시 시도해주세요.',true);}
+  finally{btn.disabled=false;btn.innerHTML='🎤 신청하기';}
+}
+
+async function fetchSongs(){
+  try{
+    const res=await fetch(`${GAS_URL}?action=songs`,{cache:'no-store'});
+    const data=await res.json();
+    renderSongs(data.songs||[]);
+  }catch(e){document.getElementById('song-list').innerHTML=`<div class="err-box">⚠️ ${e.message}</div>`;}
+}
+function renderSongs(songs){
+  if(!songs.length){document.getElementById('song-list').innerHTML=`<div style="text-align:center;padding:28px;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:12px;">🎵 아직 신청곡이 없습니다</div>`;return;}
+  document.getElementById('song-list').innerHTML=songs.map((s,i)=>{
+    const rawTime=String(s.time||'');
+    const timeMatch=rawTime.match(/\d{1,2}:\d{2}/);
+    const timeStr=timeMatch?timeMatch[0]:'';
+    // cls가 날짜문자열이면 반이름으로 변환
+    const MONTHS={'Jan':'1','Feb':'2','Mar':'3'};
+    let clsClean=String(s.cls||'');
+    if(clsClean.includes('GMT')||clsClean.includes('표준시')){
+      const mMatch=clsClean.match(/(Jan|Feb|Mar)\s+(\d+)/);
+      clsClean=mMatch?(MONTHS[mMatch[1]]+'-'+parseInt(mMatch[2])):'?';
+    }
+    const clsColor=GC[clsClean.charAt(0)]||'#64748b';
+    return `<div class="song-card">
+      <div class="snum">${songs.length-i}</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:900;color:var(--text);margin-bottom:2px;">${x(s.song)}</div>
+        ${s.artist?`<div style="font-size:13px;font-weight:700;color:var(--blue-dk);margin-bottom:5px;">🎤 ${x(s.artist)}</div>`:''}
+        <div class="smeta">
+          <span class="cdot" style="background:${clsColor}">${x(clsClean)}</span>
+          <span>${x(s.name)}</span>
+          ${timeStr?`<span style="color:var(--muted)">${timeStr}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* INFO */
+function renderInfo(){
+  document.getElementById('info-body').innerHTML=`
+    <div class="sec-hd">좌석 배치</div>
+    <div class="ic"><div class="ich">🗺️ 운동장 자리 배치도</div>
+      <div style="padding:10px 8px 12px;">
+        <div style="border:1.5px solid #e5e7eb;border-radius:10px;overflow:hidden;background:#fff;">
+          <!-- 운동장 -->
+          <div style="background:#f8f9fb;height:90px;display:flex;align-items:center;justify-content:center;border-bottom:2px solid #e5e7eb;">
+            <span style="font-family:'Black Han Sans',sans-serif;font-size:26px;color:#374151;letter-spacing:4px;">운동장</span>
+          </div>
+          <!-- 스탠드+좌석: 가로 스크롤 -->
+          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <div style="min-width:520px;">
+              <!-- 스탠드 헤더 -->
+              <div style="display:flex;">
+                <div style="flex:4;background:#3b6fd4;text-align:center;padding:6px 4px;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;">스탠드</div>
+                <div style="width:52px;background:#5a8f3c;text-align:center;padding:6px 4px;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;">조회대</div>
+                <div style="flex:7;background:#3b6fd4;text-align:center;padding:6px 4px;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;">스탠드</div>
+                <div style="width:48px;background:#c8a84b;text-align:center;padding:6px 4px;font-size:10px;font-weight:900;color:#111;flex-shrink:0;">수돗가</div>
+              </div>
+              <!-- 좌석 한 줄 -->
+              <div style="display:flex;border-top:1px solid #e5e7eb;">
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:13px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">3-4</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:13px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">3-3</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:13px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">3-2</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:13px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">3-1</div>
+                <div style="width:52px;background:#f0f7eb;border-right:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <span style="font-size:18px;">🚩</span>
+                </div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:13px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">2-3</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:13px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">2-2</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:13px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">2-1</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:12px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">1-4</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:12px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">1-3</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:12px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">1-2</div>
+                <div style="flex:1;padding:11px 2px;text-align:center;font-size:12px;font-weight:900;color:#374151;border-right:1px solid #e5e7eb;">1-1</div>
+                <div style="width:48px;background:#fefce8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">💧</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-hd">시상 안내</div>
+    <div class="ic"><div class="ich">🏆 학년별 시상 (문화상품권)</div>
+      <div style="overflow-x:auto;"><table class="ptbl">
+        <thead><tr><th style="text-align:left">순위</th><th>1학년</th><th>2학년</th><th>3학년</th></tr></thead>
+        <tbody>
+          <tr><td class="prank">🥇 종합우승</td><td class="pamt">100,000</td><td class="pamt">100,000</td><td class="pamt">100,000</td></tr>
+          <tr><td class="prank">🥈 2위</td><td class="pamt">70,000</td><td class="pamt">70,000</td><td class="pamt">70,000</td></tr>
+          <tr><td class="prank">🥉 3위</td><td class="pamt">50,000</td><td class="pamt">50,000</td><td class="pamt">50,000</td></tr>
+          <tr><td class="prank">4위</td><td class="pamt">30,000</td><td style="color:var(--muted);text-align:center;font-size:11px;">해당없음</td><td class="pamt">30,000</td></tr>
+          <tr><td class="prank">📣 응원상</td><td class="pamt">30,000</td><td class="pamt">30,000</td><td class="pamt">30,000</td></tr>
+        </tbody>
+      </table></div>
+      <div style="font-size:10px;color:var(--muted);padding:6px 0 2px;">※ 단위: 원 / 동점 시 1위 종목 수 많은 반 우선</div>
+    </div>
+
+    <div class="sec-hd">종목 배점</div>
+    <div class="ic"><div class="ich">📊 종목별 배점</div>
+      <div style="overflow-x:auto;"><table class="ptbl">
+        <thead><tr><th style="text-align:left">종목</th><th>🥇 1위</th><th>🥈 2위</th><th>🥉 3위</th><th>4위</th></tr></thead>
+        <tbody>${EVTS.map(ev=>`<tr><td style="text-align:left">${ev.icon} ${ev.fname}</td><td style="font-weight:900;color:var(--sun-deep)">100</td><td>80</td><td>60</td><td style="color:var(--muted)">40</td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+
+    <div class="sec-hd">참가 신청</div>
+    <div class="ic"><div class="ich">📝 참가신청서</div><div class="icb"><ul class="ilist">
+      <li>마감: <strong>5월 22일(금) 점심시간까지</strong></li>
+      <li>제출처: 체육과 김주현 선생님</li>
+      <li>실장·담임 서명 필수 / 2종목 이상 참가 필수</li>
+      <li>신청서와 다른 선수 출전 시 해당 종목 실격</li>
+    </ul></div></div>
+
+    <div class="sec-hd">유의사항</div>
+    <div class="wbox"><div class="wttl">⚠️ 반드시 확인하세요</div><ul class="ilist">
+      <li>출전통보 후 3분 이내 미출전 시 <strong>기권 처리</strong></li>
+      <li>대회 중 교문 및 교실 출입 금지</li>
+      <li>각반 휴대폰 <strong>2대만 허용</strong> (방송부 제외)</li>
+      <li>우천시 <strong>1주일 순연</strong></li>
+    </ul></div>
+
+    <div style="text-align:center;color:var(--muted);font-size:10px;padding:14px 0 6px;line-height:2;">
+      2026 광평중학교 체육한마당<br>주관: 안전생활부 · 총진행: 김주현
+    </div>`;
+}
+
+/* TABS */
+function go(btn){
+  const id=btn.dataset.p;
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='score')fetchScores();
+  if(id==='song')fetchSongs();
+}
+
+/* UTILS */
+const enc=s=>encodeURIComponent(s);
+const x=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const nowt=()=>new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+function toast(msg,isErr=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+(isErr?'terr':'tok');
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+/* INIT */
+renderSched();renderEvents();renderInfo();
+renderScoreHome(null);renderScoreDetail(null);
+tick();setInterval(tick,1000);setInterval(renderSched,30000);
+fetchWeather();
+fetchScores();setInterval(fetchScores,30000);
+fetchNotices();setInterval(fetchNotices,15000);
+fetchSongs();setInterval(fetchSongs,5000);
+</script>
+</body>
+</html>
