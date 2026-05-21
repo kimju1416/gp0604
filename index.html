@@ -60,9 +60,10 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 /* ── TABS ── */
 .tab-bar{background:var(--blue-dk);position:sticky;top:0;z-index:200;box-shadow:0 4px 16px rgba(30,64,175,.4);}
-.tabs{display:flex;max-width:680px;margin:0 auto;overflow-x:auto;scrollbar-width:none;}
-.tabs::-webkit-scrollbar{display:none;}
-.tab{flex:1;min-width:58px;padding:12px 3px;border:none;background:none;font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.38);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;}
+.tabs{display:flex;max-width:680px;margin:0 auto;overflow-x:hidden;}
+.tab{flex:1;min-width:0;padding:8px 1px;border:none;background:none;font-family:'Noto Sans KR',sans-serif;font-weight:700;color:rgba(255,255,255,.38);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1;}
+.tab-em{font-size:17px;line-height:1;}
+.tab-tx{font-size:9.5px;line-height:1;}
 .tab.on{color:var(--sun);border-bottom-color:var(--sun);}
 .tab:hover:not(.on){color:rgba(255,255,255,.7);}
 
@@ -380,13 +381,13 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 <!-- TABS -->
 <div class="tab-bar">
   <div class="tabs">
-    <button class="tab on" data-p="home"     onclick="go(this)">🏠 홈</button>
-    <button class="tab"    data-p="schedule" onclick="go(this)">📅 일정</button>
-    <button class="tab"    data-p="events"   onclick="go(this)">🏅 종목</button>
-    <button class="tab"    data-p="roster"   onclick="go(this)">👥 명단</button>
-    <button class="tab"    data-p="score"    onclick="go(this)">📊 점수판</button>
-    <button class="tab"    data-p="song"     onclick="go(this)">🎵 신청곡</button>
-    <button class="tab"    data-p="info"     onclick="go(this)">📋 안내</button>
+    <button class="tab on" data-p="home"     onclick="go(this)"><span class="tab-em">🏠</span><span class="tab-tx">홈</span></button>
+    <button class="tab"    data-p="schedule" onclick="go(this)"><span class="tab-em">📅</span><span class="tab-tx">일정</span></button>
+    <button class="tab"    data-p="events"   onclick="go(this)"><span class="tab-em">🏅</span><span class="tab-tx">종목</span></button>
+    <button class="tab"    data-p="roster"   onclick="go(this)"><span class="tab-em">👥</span><span class="tab-tx">명단</span></button>
+    <button class="tab"    data-p="score"    onclick="go(this)"><span class="tab-em">📊</span><span class="tab-tx">점수</span></button>
+    <button class="tab"    data-p="song"     onclick="go(this)"><span class="tab-em">🎵</span><span class="tab-tx">신청곡</span></button>
+    <button class="tab"    data-p="info"     onclick="go(this)"><span class="tab-em">📋</span><span class="tab-tx">안내</span></button>
   </div>
 </div>
 
