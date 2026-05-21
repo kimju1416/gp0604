@@ -432,7 +432,7 @@ const EVTS=[
   {id:'ball', icon:'🏐',name:'협동\n공튀기기',  fname:'협동공튀기기',  time:'10:00',dur:25,players:'반당 8명+공줍기 1명',rule:'1분 2번 기회, 횟수 합산',tip:'원 대형 + 일정한 리듬',prep:'공튀기기 4개, 카운터 4개'},
   {id:'centi',icon:'🦶',name:'지네발\n달리기',  fname:'지네발달리기',  time:'10:25',dur:25,players:'반당 12명 (6명×2회)',rule:'지네발 착용 후 왕복, 2회 합산',tip:'"하나 둘" 구령 필수!',prep:'지네발 4개, 조끼 4개'},
   {id:'rope', icon:'🪢',name:'단체\n줄넘기',    fname:'단체줄넘기',    time:'11:10',dur:25,players:'반당 10명 (줄잡이 2명)',rule:'1분 2번 기회, 횟수 합산',tip:'줄잡이 리듬이 핵심',prep:'줄넘기 4개, 카운터 4개'},
-  {id:'hula', icon:'⭕',name:'훌라후프\n넘기기',fname:'훌라후프넘기기',time:'11:35',dur:20,players:'반당 8명',rule:'훌라후프 팀 협동 경기',tip:'타이밍과 팀 호흡!',prep:'훌라후프 4개'},
+  {id:'hula', icon:'⭕',name:'훌라후프\n넘기기',fname:'훌라후프넘기기',time:'11:35',dur:20,players:'학반최대인원',rule:'훌라후프 팀 협동 경기',tip:'타이밍과 팀 호흡!',prep:'훌라후프 4개'},
   {id:'relay',icon:'🏃',name:'이어\n달리기',    fname:'이어달리기',    time:'11:55',dur:35,players:'반당 남3명+여3명',rule:'여(1·3·5번)→남(2·4·6번) 반바퀴씩',tip:'바톤 전달 연습 필수!',prep:'바톤 4개, 라인기, 라바콘, 조끼 4개'},
 ];
 const SCHED=[
@@ -445,7 +445,7 @@ const SCHED=[
   {n:7, s:'10:25',e:'10:50',dur:25, t:'지네발달리기',      i:'🦶',w:'반당 12명', tp:'rc',o:'1→2→3학년',comp:1},
   {n:8, s:'10:50',e:'11:10',dur:20, t:'OX 퀴즈',          i:'❓',w:'전교생',    tp:'re',note:'문화상품권 경품 🎁'},
   {n:9, s:'11:10',e:'11:35',dur:25, t:'단체줄넘기',        i:'🪢',w:'반당 10명', tp:'rc',o:'1→2→3학년',comp:1},
-  {n:10,s:'11:35',e:'11:55',dur:20, t:'훌라후프넘기기',    i:'⭕',w:'반당 8명',  tp:'rc',o:'1→2→3학년',comp:1},
+  {n:10,s:'11:35',e:'11:55',dur:20, t:'훌라후프넘기기',    i:'⭕',w:'학반최대인원',  tp:'rc',o:'1→2→3학년',comp:1},
   {n:11,s:'11:55',e:'12:30',dur:35, t:'이어달리기',        i:'🏃',w:'남3+여3명', tp:'rc',o:'1→2→3학년',comp:1},
   {n:12,s:'12:30',e:'13:30',dur:60, t:'점심시간',          i:'🍱',w:'전교생',    tp:'rb',note:'랜덤플레이 댄스'},
   {n:13,s:'13:30',e:'13:40',dur:10, t:'축하공연 (댄스부)', i:'💃',w:'댄스동아리',tp:'re',note:'강당'},
@@ -557,6 +557,12 @@ function renderEvents(){
     </div>`).join('');
 }
 
+/* ── 네트워크 안전장치: 마지막 성공 데이터 보관 ── */
+/* 와이파이 끊기거나 GAS 일시 오류 시 화면이 통째로 사라지지 않게,
+   직전에 받은 데이터를 기억해두고 에러 시엔 화면을 그대로 둡니다. */
+let _lastScores=null,_lastNotices=null,_lastSongs=null;
+let _scoreErrShown=false,_noticeErrShown=false,_songErrShown=false;
+
 /* SCORES */
 function getTotal(obj){return(obj&&typeof obj.total==='number')?obj.total:EVTS.reduce((s,ev)=>s+(PTS[obj&&obj[ev.id]]||0),0);}
 
@@ -634,17 +640,25 @@ async function fetchScores(){
     if(!res.ok)throw new Error('HTTP '+res.status);
     const data=await res.json();
     if(data.error){
+      // GAS가 에러 메시지 반환한 경우: 이미 성공한 적 있으면 화면 유지
+      if(_lastScores)return;
       const msg=`⚠️ ${data.error}`;
       document.getElementById('ls-body').innerHTML=`<div class="err-box">${msg}</div>`;
       document.getElementById('score-detail').innerHTML=`<div class="err-box">${msg}</div>`;
       return;
     }
+    _lastScores=data.scores||[];
+    _scoreErrShown=false;
     const t=nowt();
-    renderScoreHome(data.scores||[]);
-    renderScoreDetail(data.scores||[]);
+    renderScoreHome(_lastScores);
+    renderScoreDetail(_lastScores);
     document.getElementById('ls-time').textContent=t;
     document.getElementById('score-dt-time').textContent=t;
   }catch(e){
+    // 네트워크 오류: 마지막 성공 데이터 있으면 조용히 다음 폴링 대기
+    if(_lastScores)return;
+    if(_scoreErrShown)return;
+    _scoreErrShown=true;
     const msg=`⚠️ 점수 연결 오류: ${e.message}`;
     const guide=`<small style="display:block;margin-top:6px;color:#6b7280">📌 GAS 새 배포 후 URL 갱신 필요<br>Apps Script → 배포 → 새 배포 → URL 복사</small>`;
     document.getElementById('ls-body').innerHTML=`<div class="err-box">${msg}${guide}</div>`;
@@ -658,8 +672,14 @@ async function fetchNotices(){
     const res=await fetch(`${GAS_URL}?action=notices`,{cache:'no-store'});
     if(!res.ok)throw new Error('HTTP '+res.status);
     const data=await res.json();
-    renderNotices(data.notices||[]);
+    _lastNotices=data.notices||[];
+    _noticeErrShown=false;
+    renderNotices(_lastNotices);
   }catch(e){
+    // 마지막 성공 데이터 있으면 화면 유지
+    if(_lastNotices)return;
+    if(_noticeErrShown)return;
+    _noticeErrShown=true;
     document.getElementById('nb-list').innerHTML=`<div class="err-box">⚠️ 공지 오류: ${e.message}</div>`;
   }
 }
@@ -715,8 +735,16 @@ async function fetchSongs(){
   try{
     const res=await fetch(`${GAS_URL}?action=songs`,{cache:'no-store'});
     const data=await res.json();
-    renderSongs(data.songs||[]);
-  }catch(e){document.getElementById('song-list').innerHTML=`<div class="err-box">⚠️ ${e.message}</div>`;}
+    _lastSongs=data.songs||[];
+    _songErrShown=false;
+    renderSongs(_lastSongs);
+  }catch(e){
+    // 마지막 성공 데이터 있으면 화면 유지
+    if(_lastSongs)return;
+    if(_songErrShown)return;
+    _songErrShown=true;
+    document.getElementById('song-list').innerHTML=`<div class="err-box">⚠️ ${e.message}</div>`;
+  }
 }
 function renderSongs(songs){
   if(!songs.length){document.getElementById('song-list').innerHTML=`<div style="text-align:center;padding:28px;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:12px;">🎵 아직 신청곡이 없습니다</div>`;return;}
