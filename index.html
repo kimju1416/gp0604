@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2026 광평중학교 체육한마당</title>
+<!-- 카톡/SNS 공유 미리보기 -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="🏃 2026 광평중학교 체육한마당">
+<meta property="og:description" content="6월 4일(목) 09:00~15:30 · 실시간 점수판 · 신청곡 · 공지">
+<meta property="og:image" content="og-image.png">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#1d4ed8">
+<meta name="description" content="2026 광평중학교 체육한마당 실시간 점수판·신청곡·공지">
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@900&family=Gugi&family=Single+Day&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -256,6 +264,43 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .tok{background:var(--blue-dk);color:var(--sun);}
 .terr{background:#7f1d1d;color:#fecaca;}
 @media(max-width:400px){.hd-title{font-size:32px;}.cd-n{font-size:22px;}.fg2,.fg3{grid-template-columns:1fr 1fr;}.fg3{grid-template-columns:1fr 1fr;}}
+
+/* ── ★ NEW: 점수 변화 강조 (등수 바뀐 순간) ── */
+@keyframes bumpUp{
+  0%  {background:rgba(34,197,94,.0); transform:translateX(0);}
+  10% {background:rgba(34,197,94,.45);transform:translateX(2px);}
+  100%{background:transparent;        transform:translateX(0);}
+}
+.score-bump{animation:bumpUp 2.4s ease-out;}
+.score-arrow{display:inline-block;margin-left:6px;font-weight:900;animation:fadeArrow 2.4s ease-out forwards;}
+.score-arrow.up{color:#059669;}
+@keyframes fadeArrow{
+  0%  {opacity:0;transform:translateY(8px);}
+  15% {opacity:1;transform:translateY(0);}
+  80% {opacity:1;transform:translateY(0);}
+  100%{opacity:0;transform:translateY(-4px);}
+}
+
+/* ── ★ NEW: 긴급 공지 ── */
+.nb-item.urgent{background:linear-gradient(90deg,#fef2f2,#fff);border-left:4px solid #dc2626;padding-left:8px;}
+.nb-item.urgent .nb-icon{background:#fee2e2;animation:pulse 1.5s infinite;}
+.nb-item.urgent .nb-time{color:#dc2626;}
+.nb-item.urgent .nb-tag{background:#dc2626;color:#fff;}
+.nb-item.urgent .nb-content{color:#991b1b;font-weight:900;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+/* ── ★ NEW: 홈 - 현재 진행 종목 ── */
+.now-card{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fef2f2,#fee2e2);border:2px solid #fca5a5;border-radius:14px;padding:12px 14px;margin-bottom:12px;box-shadow:0 2px 12px rgba(220,38,38,.15);}
+.now-icon{font-size:36px;line-height:1;flex-shrink:0;}
+.now-body{flex:1;min-width:0;}
+.now-label{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:900;color:#dc2626;letter-spacing:1.5px;margin-bottom:3px;}
+.now-dot{width:7px;height:7px;border-radius:50%;background:#dc2626;animation:pulse 1s infinite;}
+.now-name{font-size:16px;font-weight:900;color:#991b1b;line-height:1.2;}
+.now-meta{font-size:11px;color:#7f1d1d;margin-top:3px;}
+
+/* ── ★ NEW: 로딩 스켈레톤 ── */
+.ld-skel{padding:18px;text-align:center;color:var(--muted);font-size:12px;}
+.ld-skel .spin-sm{display:inline-block;width:14px;height:14px;border:2px solid #cbd5e1;border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle;margin-right:8px;}
 </style>
 </head>
 <body>
@@ -306,6 +351,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 <!-- ① 홈: 공지 먼저, 점수 나중 -->
 <div id="p-home" class="panel on">
+
+  <!-- ★ NEW: 현재 진행 중인 종목 (대회 시간에만 표시) -->
+  <div id="now-card"></div>
 
   <!-- 공지사항 (먼저) -->
   <div class="sec-hd">공지사항</div>
@@ -506,6 +554,25 @@ function wIcon(code){
 
 /* SCHEDULE */
 function curIdx(){const now=new Date();if(now.toDateString()!==EVT_DATE.toDateString())return -1;let c=-1;SCHED.forEach((r,i)=>{const[h,mo]=r.s.split(':').map(Number);const t=new Date(EVT_DATE);t.setHours(h,mo,0,0);if(now>=t)c=i;});return c;}
+
+/* ★ NEW: 홈에 '지금 진행 중' 카드 표시 (대회 시간에만) */
+function renderNowCard(){
+  const el=document.getElementById('now-card');if(!el)return;
+  const ci=curIdx();
+  const now=new Date();
+  // 대회 시작 전 또는 종료 후엔 숨김
+  if(ci<0||now>=EVT_END){el.innerHTML='';return;}
+  const r=SCHED[ci];
+  el.innerHTML=`<div class="now-card">
+    <div class="now-icon">${r.i}</div>
+    <div class="now-body">
+      <div class="now-label"><span class="now-dot"></span>LIVE · 진행 중</div>
+      <div class="now-name">${r.t}</div>
+      <div class="now-meta">⏰ ${r.s}${r.e?' ~ '+r.e:''}${r.dur?' · '+r.dur+'분':''} · ${r.w}</div>
+    </div>
+  </div>`;
+}
+
 function renderSched(){
   const ci=curIdx();
   // 타입별 색상
@@ -567,26 +634,29 @@ let _scoreErrShown=false,_noticeErrShown=false,_songErrShown=false;
 function getTotal(obj){return(obj&&typeof obj.total==='number')?obj.total:EVTS.reduce((s,ev)=>s+(PTS[obj&&obj[ev.id]]||0),0);}
 
 function renderScoreHome(gs){
+  // null = 첫 로딩 중, [] = 데이터 없음, 그 외 = 정상
+  if(gs===null){
+    document.getElementById('ls-body').innerHTML=`<div class="ld-skel"><span class="spin-sm"></span>점수 불러오는 중...</div>`;
+    return;
+  }
   const byC={};(gs||[]).forEach(s=>byC[s.cls]=s);
-  if(!gs||!gs.length){
+  if(!gs.length){
     document.getElementById('ls-body').innerHTML=`<div class="ls-empty">📊 아직 점수가 없습니다<br><span style="font-size:10px;color:var(--muted)">점수 시트 B~G열에 순위(1~4)를 입력하세요</span></div>`;
     return;
   }
   document.getElementById('ls-body').innerHTML=GRADES.map(g=>{
-    // 등수 계산 (점수 기준 정렬로 순위만 구함)
     const sorted=[...g.classes].sort((a,b)=>getTotal(byC[b])-getTotal(byC[a]));
     const rkOf={};sorted.forEach((c,i)=>rkOf[c]=i+1);
 
-    // 표시는 반 번호 순서 그대로 (1-1, 1-2, 1-3...)
     const items=g.classes.map(c=>{
       const t=getTotal(byC[c]),rk=rkOf[c];
       const medal=rk===1?'🥇':rk===2?'🥈':rk===3?'🥉':'';
       const rkBg  =rk===1?'#f59e0b':rk===2?'#e5e7eb':rk===3?'#fde8d8':'#f1f5f9';
       const rkTxt =rk===1?'#111'   :rk===2?'#374151':rk===3?'#7c2d12':'#9ca3af';
       const rowBg =rk===1?'#fffbeb':'var(--color-background-secondary)';
-      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:${rowBg};margin-bottom:4px;">
+      return `<div data-cls="${c}" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:${rowBg};margin-bottom:4px;">
         <div style="font-size:13px;font-weight:700;flex:1;color:var(--color-text-primary);">${c}</div>
-        <div style="font-size:13px;color:var(--color-text-secondary);">${t}점</div>
+        <div style="font-size:13px;color:var(--color-text-secondary);" data-cls-pts="${c}">${t}점</div>
         <div style="display:flex;align-items:center;gap:3px;background:${rkBg};color:${rkTxt};font-size:12px;font-weight:700;border-radius:6px;padding:4px 10px;min-width:58px;justify-content:center;">
           ${medal?`<span style="font-size:15px;line-height:1;margin-right:2px;">${medal}</span>`:''}${rk}위
         </div>
@@ -600,8 +670,11 @@ function renderScoreHome(gs){
 }
 
 function renderScoreDetail(gs){
+  if(gs===null){
+    document.getElementById('score-detail').innerHTML=`<div class="ld-skel"><span class="spin-sm"></span>점수 불러오는 중...</div>`;
+    return;
+  }
   const byC={};(gs||[]).forEach(s=>byC[s.cls]=s);
-  // 점수판 헤더: 이모지 + 한글 두줄
   document.getElementById('score-detail').innerHTML=GRADES.map(g=>{
     const rows=g.classes.map(c=>({c,t:getTotal(byC[c])})).sort((a,b)=>b.t-a.t);
     const rkOf={};rows.forEach((r,i)=>rkOf[r.c]=i+1);
@@ -618,7 +691,7 @@ function renderScoreDetail(gs){
           ?`<td><span class="rb2 rb2${rank}">${rank}위</span><span style="display:block;font-size:8px;color:var(--muted)">${pts}점</span></td>`
           :`<td><span class="rbn">—</span></td>`;
       }).join('');
-      return `<tr class="${rk===1?'rowg':rk===2?'rows':''}">
+      return `<tr class="${rk===1?'rowg':rk===2?'rows':''}" data-cls-detail="${c}">
         <td class="td-cls">${c}</td>${cells}
         <td>${t>0?`<span class="td-total">${t}</span>`:''}</td>
         <td>${t>0?`<span class="rb2 rb2${rk}">${rk}위</span>`:''}</td>
@@ -640,22 +713,25 @@ async function fetchScores(){
     if(!res.ok)throw new Error('HTTP '+res.status);
     const data=await res.json();
     if(data.error){
-      // GAS가 에러 메시지 반환한 경우: 이미 성공한 적 있으면 화면 유지
       if(_lastScores)return;
       const msg=`⚠️ ${data.error}`;
       document.getElementById('ls-body').innerHTML=`<div class="err-box">${msg}</div>`;
       document.getElementById('score-detail').innerHTML=`<div class="err-box">${msg}</div>`;
       return;
     }
-    _lastScores=data.scores||[];
+    const newScores=data.scores||[];
+    // ★ 변화 감지 (첫 로딩이면 강조 안 함)
+    const changes = _lastScores ? detectScoreChanges(_lastScores, newScores) : {};
+    _lastScores=newScores;
     _scoreErrShown=false;
     const t=nowt();
     renderScoreHome(_lastScores);
     renderScoreDetail(_lastScores);
     document.getElementById('ls-time').textContent=t;
     document.getElementById('score-dt-time').textContent=t;
+    // 렌더링 직후 강조 효과
+    if(Object.keys(changes).length)setTimeout(()=>highlightChanges(changes),30);
   }catch(e){
-    // 네트워크 오류: 마지막 성공 데이터 있으면 조용히 다음 폴링 대기
     if(_lastScores)return;
     if(_scoreErrShown)return;
     _scoreErrShown=true;
@@ -664,6 +740,41 @@ async function fetchScores(){
     document.getElementById('ls-body').innerHTML=`<div class="err-box">${msg}${guide}</div>`;
     document.getElementById('score-detail').innerHTML=`<div class="err-box">${msg}${guide}</div>`;
   }
+}
+
+/* ★ 점수 변화 감지 — 점수가 오른 반만 표시 */
+function detectScoreChanges(oldS, newS){
+  const oldMap={};oldS.forEach(s=>oldMap[s.cls]=getTotal(s));
+  const changes={};
+  newS.forEach(s=>{
+    const nt=getTotal(s), ot=oldMap[s.cls]||0;
+    if(nt>ot)changes[s.cls]={delta:nt-ot};
+  });
+  return changes;
+}
+
+/* ★ 강조 효과 — 점수 행 깜빡임 + 화살표 */
+function highlightChanges(changes){
+  Object.keys(changes).forEach(cls=>{
+    // 홈 점수판 행
+    document.querySelectorAll(`[data-cls="${cls}"]`).forEach(el=>{
+      el.classList.remove('score-bump');void el.offsetWidth;  // reflow
+      el.classList.add('score-bump');
+    });
+    // 상세 점수판 행
+    document.querySelectorAll(`[data-cls-detail="${cls}"]`).forEach(el=>{
+      el.classList.remove('score-bump');void el.offsetWidth;
+      el.classList.add('score-bump');
+    });
+    // 점수 옆 화살표
+    document.querySelectorAll(`[data-cls-pts="${cls}"]`).forEach(el=>{
+      const arr=document.createElement('span');
+      arr.className='score-arrow up';
+      arr.textContent=`↑+${changes[cls].delta}`;
+      el.appendChild(arr);
+      setTimeout(()=>arr.remove(),2400);
+    });
+  });
 }
 
 /* NOTICES */
@@ -684,15 +795,21 @@ async function fetchNotices(){
   }
 }
 function renderNotices(notices){
+  if(notices===null){
+    document.getElementById('nb-list').innerHTML=`<div class="ld-skel"><span class="spin-sm"></span>공지 불러오는 중...</div>`;
+    return;
+  }
   if(!notices.length){
     document.getElementById('nb-list').innerHTML=`<div class="nb-empty">📢 아직 공지가 없습니다<br><span style="font-size:11px;color:var(--muted)">공지 시트 B열에 입력하면 표시됩니다</span></div>`;
     return;
   }
-  document.getElementById('nb-list').innerHTML=notices.map(n=>`
-    <div class="nb-item">
-      <div class="nb-icon">📢</div>
+  // ★ 긴급공지를 맨 위로 정렬 (그 안에서는 원래 순서 유지)
+  const sorted=[...notices].sort((a,b)=>(b.urgent?1:0)-(a.urgent?1:0));
+  document.getElementById('nb-list').innerHTML=sorted.map(n=>`
+    <div class="nb-item${n.urgent?' urgent':''}">
+      <div class="nb-icon">${n.urgent?'🚨':'📢'}</div>
       <div class="nb-body">
-        <div class="nb-meta"><span class="nb-time">${x(n.time)}</span><span class="nb-tag">공지</span></div>
+        <div class="nb-meta"><span class="nb-time">${x(n.time)}</span><span class="nb-tag">${n.urgent?'긴급':'공지'}</span></div>
         <div class="nb-content">${x(n.content)}</div>
       </div>
     </div>`).join('');
@@ -747,6 +864,7 @@ async function fetchSongs(){
   }
 }
 function renderSongs(songs){
+  if(songs===null){document.getElementById('song-list').innerHTML=`<div class="ld-skel"><span class="spin-sm"></span>신청곡 불러오는 중...</div>`;return;}
   if(!songs.length){document.getElementById('song-list').innerHTML=`<div style="text-align:center;padding:28px;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:12px;">🎵 아직 신청곡이 없습니다</div>`;return;}
   document.getElementById('song-list').innerHTML=songs.map((s,i)=>{
     const rawTime=String(s.time||'');
@@ -887,8 +1005,13 @@ function toast(msg,isErr=false){
 
 /* INIT */
 renderSched();renderEvents();renderInfo();
+// 첫 로딩 표시 (응답 받기 전 빈 화면 방지)
 renderScoreHome(null);renderScoreDetail(null);
-tick();setInterval(tick,1000);setInterval(renderSched,30000);
+renderNotices(null);renderSongs(null);
+renderNowCard();  // ★ 진행 종목 카드 (대회 시간이면 표시)
+tick();setInterval(tick,1000);
+setInterval(renderSched,30000);
+setInterval(renderNowCard,30000);  // ★ 30초마다 진행 종목 갱신
 fetchWeather();
 fetchScores();setInterval(fetchScores,30000);
 fetchNotices();setInterval(fetchNotices,15000);
