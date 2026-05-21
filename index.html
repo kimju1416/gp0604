@@ -301,6 +301,48 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 /* ── ★ NEW: 로딩 스켈레톤 ── */
 .ld-skel{padding:18px;text-align:center;color:var(--muted);font-size:12px;}
 .ld-skel .spin-sm{display:inline-block;width:14px;height:14px;border:2px solid #cbd5e1;border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle;margin-right:8px;}
+
+/* ── ★ NEW: 새로고침 버튼 피드백 ── */
+.refresh-btn:disabled{opacity:.5;cursor:not-allowed;}
+.refresh-btn.spinning{pointer-events:none;}
+.refresh-btn.spinning .ri{display:inline-block;animation:sp .7s linear infinite;}
+
+/* ── ★ NEW: 선수명단 탭 ── */
+.rs-tog{display:flex;gap:6px;background:#f1f5f9;padding:4px;border-radius:10px;margin-bottom:10px;}
+.rs-tb{flex:1;padding:9px 4px;border:none;background:transparent;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
+.rs-tb.on{background:#fff;color:var(--blue-dk);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.rs-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.rs-chip{padding:7px 12px;border:1px solid var(--border);background:#fff;border-radius:18px;font-size:11px;font-weight:700;color:var(--color-text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.rs-chip.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.rs-chip:hover:not(.on){background:#f8fafc;}
+
+.rs-body{min-height:120px;}
+.rs-grp{margin-bottom:14px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;}
+.rs-grp-hd{display:flex;align-items:center;gap:8px;background:#f8fafc;padding:9px 12px;border-bottom:1px solid var(--border);}
+.rs-grp-icon{font-size:18px;line-height:1;}
+.rs-grp-title{font-size:13px;font-weight:900;color:var(--color-text-primary);flex:1;}
+.rs-grp-count{font-size:10px;font-weight:700;color:var(--muted);background:#e2e8f0;padding:3px 8px;border-radius:10px;}
+.rs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:6px;padding:10px;}
+.rs-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:8px 4px;font-size:12px;font-weight:700;color:var(--color-text-primary);text-align:center;min-height:38px;}
+.rs-cell .rs-memo{font-size:8px;color:var(--muted);font-weight:500;margin-top:2px;}
+.rs-empty{padding:28px;text-align:center;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:12px;}
+
+/* ── ★ NEW: 모달 (선수명단 팝업) ── */
+.rm-back{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9000;align-items:center;justify-content:center;padding:14px;animation:fadeIn .15s;}
+.rm-back.on{display:flex;}
+.rm-card{background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popIn .2s;}
+.rm-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border-radius:16px 16px 0 0;}
+.rm-title{font-size:15px;font-weight:900;}
+.rm-x{background:rgba(255,255,255,.18);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;font-weight:700;}
+.rm-x:hover{background:rgba(255,255,255,.3);}
+.rm-body{overflow-y:auto;padding:14px;flex:1;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes popIn{from{opacity:0;transform:scale(.92);}to{opacity:1;transform:scale(1);}}
+
+/* 종목 카드에 선수보기 버튼 */
+.ev-roster-btn{margin-top:8px;width:100%;padding:9px;background:#0891b2;color:#fff;border:none;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s;}
+.ev-roster-btn:hover{background:#0e7490;}
+.ev-roster-btn:disabled{background:#94a3b8;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -341,6 +383,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
     <button class="tab on" data-p="home"     onclick="go(this)">🏠 홈</button>
     <button class="tab"    data-p="schedule" onclick="go(this)">📅 일정</button>
     <button class="tab"    data-p="events"   onclick="go(this)">🏅 종목</button>
+    <button class="tab"    data-p="roster"   onclick="go(this)">👥 명단</button>
     <button class="tab"    data-p="score"    onclick="go(this)">📊 점수판</button>
     <button class="tab"    data-p="song"     onclick="go(this)">🎵 신청곡</button>
     <button class="tab"    data-p="info"     onclick="go(this)">📋 안내</button>
@@ -360,7 +403,10 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
   <div class="nb-wrap">
     <div class="nb-head">
       <div class="nb-title">📢 공지사항</div>
-      <div class="nb-refresh"><div class="nb-rdot"></div>15초 자동갱신</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="nb-refresh"><div class="nb-rdot"></div>15초 자동</div>
+        <button class="refresh-btn" id="rf-notices" onclick="fetchNotices(true)"><span class="ri">🔄</span></button>
+      </div>
     </div>
     <div class="nb-list" id="nb-list">
       <div class="ld"><div class="spin"></div><br>공지 불러오는 중...</div>
@@ -374,7 +420,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
       <div class="ls-title"><div class="ls-dot"></div>실시간 점수판</div>
       <div class="ls-right">
         <div class="ls-time" id="ls-time">-</div>
-        <button class="refresh-btn" onclick="fetchScores()">🔄 새로고침</button>
+        <button class="refresh-btn" id="rf-scores-1" onclick="fetchScores(true)"><span class="ri">🔄</span> 새로고침</button>
       </div>
     </div>
     <div class="ls-body" id="ls-body">
@@ -406,6 +452,42 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
   <div class="ev-list" id="ev-list"></div>
 </div>
 
+<!-- ★ NEW: 선수명단 -->
+<div id="p-roster" class="panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;">
+    <div class="sec-hd" style="margin:0;">선수 명단</div>
+    <button class="refresh-btn" id="rf-roster" style="background:var(--blue-pale);border:1px solid var(--border);color:var(--blue-dk);" onclick="fetchRoster(true)"><span class="ri">🔄</span></button>
+  </div>
+
+  <!-- 보기 모드 토글 -->
+  <div class="rs-tog">
+    <button class="rs-tb on" data-rmode="cls"  onclick="setRosterMode('cls')">반별</button>
+    <button class="rs-tb"    data-rmode="ev"   onclick="setRosterMode('ev')">종목별</button>
+    <button class="rs-tb"    data-rmode="srch" onclick="setRosterMode('srch')">🔍 검색</button>
+  </div>
+
+  <!-- 검색창 (검색 모드일 때만 표시) -->
+  <input id="rs-srch" type="text" placeholder="선수 이름 검색..." style="display:none;width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:13px;margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;" oninput="renderRoster()">
+
+  <!-- 필터 칩 (반 or 종목) -->
+  <div id="rs-chips" class="rs-chips"></div>
+
+  <!-- 본문 -->
+  <div id="rs-body" class="rs-body"></div>
+  <div id="rs-meta" style="text-align:center;font-size:10px;color:var(--muted);margin-top:8px;"></div>
+</div>
+
+<!-- ★ NEW: 선수명단 모달 (종목별 팝업) -->
+<div id="roster-modal" class="rm-back" onclick="closeRosterModal(event)">
+  <div class="rm-card" onclick="event.stopPropagation()">
+    <div class="rm-head">
+      <div class="rm-title" id="rm-title">선수 명단</div>
+      <button class="rm-x" onclick="closeRosterModal()">✕</button>
+    </div>
+    <div class="rm-body" id="rm-body"></div>
+  </div>
+</div>
+
 <!-- ④ 점수판 -->
 <div id="p-score" class="panel">
   <div class="sec-hd">점수판 상세</div>
@@ -413,7 +495,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
     <div class="sbar-l"><div class="pulse"></div>Sheets 연동 · 순위 입력 → 점수 자동합산</div>
     <div style="display:flex;align-items:center;gap:8px;">
       <span id="score-dt-time" style="font-size:10px;color:var(--muted);">-</span>
-      <button class="refresh-btn" style="background:var(--blue-pale);border:1px solid var(--border);color:var(--blue-dk);" onclick="fetchScores()">🔄</button>
+      <button class="refresh-btn" id="rf-scores-2" style="background:var(--blue-pale);border:1px solid var(--border);color:var(--blue-dk);" onclick="fetchScores(true)"><span class="ri">🔄</span></button>
     </div>
   </div>
   <div id="score-detail"></div>
@@ -453,7 +535,10 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
   </div>
   <div class="slhd">
     <div class="slttl">📋 신청곡 목록</div>
-    <div class="abadge"><div class="adot"></div>5초 자동갱신</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="abadge"><div class="adot"></div>5초 자동</div>
+      <button class="refresh-btn" id="rf-songs" style="background:var(--blue-pale);border:1px solid var(--border);color:var(--blue-dk);" onclick="fetchSongs(true)"><span class="ri">🔄</span></button>
+    </div>
   </div>
   <div id="song-list"></div>
 </div>
@@ -621,6 +706,7 @@ function renderEvents(){
         <div class="ev-lb">🎯 배점</div><div class="ev-vl"><div class="pts-row"><span class="pt pt1">🥇 1위 100</span><span class="pt pt2">🥈 2위 80</span><span class="pt pt3">🥉 3위 60</span><span class="pt pt4">4위 40</span></div></div>
         <div class="ev-lb">🔧 준비물</div><div class="ev-vl" style="color:var(--muted);font-size:11px;">${ev.prep}</div>
       </div>
+      <button class="ev-roster-btn" onclick="openRosterModal('${ev.fname.replace(/'/g,"\\'")}','${ev.icon}')">👥 선수 보기</button>
     </div>`).join('');
 }
 
@@ -707,20 +793,20 @@ function renderScoreDetail(gs){
   }).join('');
 }
 
-async function fetchScores(){
+async function fetchScores(manual){
+  if(manual){spinBtn(['rf-scores-1','rf-scores-2'],true);}
   try{
     const res=await fetch(`${GAS_URL}?action=scores`,{cache:'no-store'});
     if(!res.ok)throw new Error('HTTP '+res.status);
     const data=await res.json();
     if(data.error){
-      if(_lastScores)return;
+      if(_lastScores){if(manual)toast('⚠️ '+data.error,true);return;}
       const msg=`⚠️ ${data.error}`;
       document.getElementById('ls-body').innerHTML=`<div class="err-box">${msg}</div>`;
       document.getElementById('score-detail').innerHTML=`<div class="err-box">${msg}</div>`;
       return;
     }
     const newScores=data.scores||[];
-    // ★ 변화 감지 (첫 로딩이면 강조 안 함)
     const changes = _lastScores ? detectScoreChanges(_lastScores, newScores) : {};
     _lastScores=newScores;
     _scoreErrShown=false;
@@ -729,9 +815,10 @@ async function fetchScores(){
     renderScoreDetail(_lastScores);
     document.getElementById('ls-time').textContent=t;
     document.getElementById('score-dt-time').textContent=t;
-    // 렌더링 직후 강조 효과
     if(Object.keys(changes).length)setTimeout(()=>highlightChanges(changes),30);
+    if(manual)toast('✓ 점수 최신',false);
   }catch(e){
+    if(manual)toast('⚠️ 연결 오류',true);
     if(_lastScores)return;
     if(_scoreErrShown)return;
     _scoreErrShown=true;
@@ -739,6 +826,8 @@ async function fetchScores(){
     const guide=`<small style="display:block;margin-top:6px;color:#6b7280">📌 GAS 새 배포 후 URL 갱신 필요<br>Apps Script → 배포 → 새 배포 → URL 복사</small>`;
     document.getElementById('ls-body').innerHTML=`<div class="err-box">${msg}${guide}</div>`;
     document.getElementById('score-detail').innerHTML=`<div class="err-box">${msg}${guide}</div>`;
+  }finally{
+    if(manual)setTimeout(()=>spinBtn(['rf-scores-1','rf-scores-2'],false),400);
   }
 }
 
@@ -778,7 +867,8 @@ function highlightChanges(changes){
 }
 
 /* NOTICES */
-async function fetchNotices(){
+async function fetchNotices(manual){
+  if(manual)spinBtn(['rf-notices'],true);
   try{
     const res=await fetch(`${GAS_URL}?action=notices`,{cache:'no-store'});
     if(!res.ok)throw new Error('HTTP '+res.status);
@@ -786,12 +876,15 @@ async function fetchNotices(){
     _lastNotices=data.notices||[];
     _noticeErrShown=false;
     renderNotices(_lastNotices);
+    if(manual)toast('✓ 공지 최신',false);
   }catch(e){
-    // 마지막 성공 데이터 있으면 화면 유지
+    if(manual)toast('⚠️ 공지 오류',true);
     if(_lastNotices)return;
     if(_noticeErrShown)return;
     _noticeErrShown=true;
     document.getElementById('nb-list').innerHTML=`<div class="err-box">⚠️ 공지 오류: ${e.message}</div>`;
+  }finally{
+    if(manual)setTimeout(()=>spinBtn(['rf-notices'],false),400);
   }
 }
 function renderNotices(notices){
@@ -848,19 +941,23 @@ async function submitSong(){
   finally{btn.disabled=false;btn.innerHTML='🎤 신청하기';}
 }
 
-async function fetchSongs(){
+async function fetchSongs(manual){
+  if(manual)spinBtn(['rf-songs'],true);
   try{
     const res=await fetch(`${GAS_URL}?action=songs`,{cache:'no-store'});
     const data=await res.json();
     _lastSongs=data.songs||[];
     _songErrShown=false;
     renderSongs(_lastSongs);
+    if(manual)toast('✓ 신청곡 최신',false);
   }catch(e){
-    // 마지막 성공 데이터 있으면 화면 유지
+    if(manual)toast('⚠️ 신청곡 오류',true);
     if(_lastSongs)return;
     if(_songErrShown)return;
     _songErrShown=true;
     document.getElementById('song-list').innerHTML=`<div class="err-box">⚠️ ${e.message}</div>`;
+  }finally{
+    if(manual)setTimeout(()=>spinBtn(['rf-songs'],false),400);
   }
 }
 function renderSongs(songs){
@@ -891,6 +988,175 @@ function renderSongs(songs){
       </div>
     </div>`;
   }).join('');
+}
+
+/* ★ NEW: 공통 헬퍼 (새로고침 버튼 회전 + 토스트) */
+function spinBtn(ids,on){
+  (ids||[]).forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    if(on){el.classList.add('spinning');el.disabled=true;}
+    else  {el.classList.remove('spinning');el.disabled=false;}
+  });
+}
+
+/* ★ NEW: ROSTER (선수명단) */
+let _lastRoster=null;       // [{cls,ev,name,memo}, ...]
+let _rosterErrShown=false;
+let _rosterMode='cls';       // 'cls' | 'ev' | 'srch'
+let _rosterFilter=null;      // 선택된 반/종목 (chip)
+
+async function fetchRoster(manual){
+  if(manual)spinBtn(['rf-roster'],true);
+  try{
+    const res=await fetch(`${GAS_URL}?action=roster`,{cache:'no-store'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    _lastRoster=data.roster||[];
+    _rosterErrShown=false;
+    renderRoster();
+    if(manual)toast('✓ 명단 최신',false);
+  }catch(e){
+    if(manual)toast('⚠️ 명단 오류',true);
+    if(_lastRoster)return;
+    if(_rosterErrShown)return;
+    _rosterErrShown=true;
+    document.getElementById('rs-body').innerHTML=`<div class="err-box">⚠️ 명단 오류: ${e.message}</div>`;
+  }finally{
+    if(manual)setTimeout(()=>spinBtn(['rf-roster'],false),400);
+  }
+}
+
+function setRosterMode(m){
+  _rosterMode=m;
+  _rosterFilter=null;  // 모드 바꾸면 필터 초기화
+  document.querySelectorAll('.rs-tb').forEach(b=>b.classList.toggle('on', b.dataset.rmode===m));
+  document.getElementById('rs-srch').style.display = (m==='srch') ? 'block' : 'none';
+  if(m==='srch')document.getElementById('rs-srch').focus();
+  renderRoster();
+}
+
+function renderRoster(){
+  const body=document.getElementById('rs-body');
+  const chips=document.getElementById('rs-chips');
+  const meta=document.getElementById('rs-meta');
+  if(_lastRoster===null){
+    body.innerHTML=`<div class="ld-skel"><span class="spin-sm"></span>명단 불러오는 중...</div>`;
+    chips.innerHTML='';meta.textContent='';return;
+  }
+  if(!_lastRoster.length){
+    body.innerHTML=`<div class="rs-empty">👥 등록된 명단이 없습니다<br><span style="font-size:10px">시트의 [명단] 탭에 입력하면 표시됩니다</span></div>`;
+    chips.innerHTML='';meta.textContent='';return;
+  }
+
+  // 검색 모드
+  if(_rosterMode==='srch'){
+    chips.innerHTML='';
+    const q=(document.getElementById('rs-srch').value||'').trim();
+    if(!q){body.innerHTML=`<div class="rs-empty">선수 이름을 입력하세요 (2글자 이상)</div>`;meta.textContent='';return;}
+    if(q.length<2){body.innerHTML=`<div class="rs-empty">2글자 이상 입력하세요</div>`;meta.textContent='';return;}
+    const matches=_lastRoster.filter(r=>r.name.includes(q));
+    if(!matches.length){body.innerHTML=`<div class="rs-empty">"${x(q)}"에 해당하는 선수가 없습니다</div>`;meta.textContent='';return;}
+    // 이름 → [출전 종목들]
+    const byName={};
+    matches.forEach(r=>{
+      const k=r.name+'@'+r.cls;
+      if(!byName[k])byName[k]={name:r.name,cls:r.cls,evs:[]};
+      byName[k].evs.push({ev:r.ev,memo:r.memo});
+    });
+    body.innerHTML=Object.keys(byName).map(k=>{
+      const p=byName[k];
+      const evList=p.evs.map(e=>`<span style="display:inline-block;background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700;margin:2px 3px 0 0;">${x(e.ev)}${e.memo?` (${x(e.memo)})`:''}</span>`).join('');
+      return `<div class="rs-grp"><div class="rs-grp-hd"><div class="rs-grp-title">${x(p.name)}</div><div class="rs-grp-count">${x(p.cls)}</div></div><div style="padding:10px 12px;">${evList}</div></div>`;
+    }).join('');
+    meta.textContent=`총 ${Object.keys(byName).length}명`;
+    return;
+  }
+
+  // 반별 / 종목별 모드
+  const isClsMode=_rosterMode==='cls';
+  const items = isClsMode
+    ? ['1-1','1-2','1-3','1-4','2-1','2-2','2-3','3-1','3-2','3-3','3-4']
+    : EVTS.map(e=>e.fname);
+
+  // 칩 렌더링
+  chips.innerHTML=items.map(it=>{
+    const on = _rosterFilter===it;
+    return `<button class="rs-chip${on?' on':''}" onclick="setRosterFilter('${it.replace(/'/g,"\\'")}')">${x(it)}</button>`;
+  }).join('');
+
+  // 필터 없으면 안내
+  if(!_rosterFilter){
+    body.innerHTML=`<div class="rs-empty">위에서 ${isClsMode?'반':'종목'}을 선택하세요</div>`;
+    meta.textContent=`전체 ${_lastRoster.length}명 등록`;return;
+  }
+
+  // 데이터 필터
+  const filtered = isClsMode
+    ? _lastRoster.filter(r=>r.cls===_rosterFilter)
+    : _lastRoster.filter(r=>r.ev===_rosterFilter);
+
+  if(!filtered.length){body.innerHTML=`<div class="rs-empty">데이터 없음</div>`;meta.textContent='';return;}
+
+  // 그룹핑
+  if(isClsMode){
+    // 반별: 종목별로 그룹
+    const groups={};EVTS.forEach(e=>groups[e.fname]={ev:e,players:[]});
+    filtered.forEach(r=>{if(groups[r.ev])groups[r.ev].players.push(r);});
+    body.innerHTML=EVTS.map(e=>{
+      const grp=groups[e.fname];if(!grp.players.length)return '';
+      const cells=grp.players.map(p=>`<div class="rs-cell">${x(p.name)}${p.memo?`<div class="rs-memo">${x(p.memo)}</div>`:''}</div>`).join('');
+      return `<div class="rs-grp">
+        <div class="rs-grp-hd"><div class="rs-grp-icon">${e.icon}</div><div class="rs-grp-title">${x(e.fname)}</div><div class="rs-grp-count">${grp.players.length}명</div></div>
+        <div class="rs-grid">${cells}</div>
+      </div>`;
+    }).join('');
+    meta.textContent=`${_rosterFilter}반 · 총 ${filtered.length}명`;
+  } else {
+    // 종목별: 반별로 그룹
+    const CLS_LIST=['1-1','1-2','1-3','1-4','2-1','2-2','2-3','3-1','3-2','3-3','3-4'];
+    const groups={};CLS_LIST.forEach(c=>groups[c]=[]);
+    filtered.forEach(r=>{if(groups[r.cls])groups[r.cls].push(r);});
+    body.innerHTML=CLS_LIST.map(c=>{
+      const ps=groups[c];if(!ps.length)return '';
+      const cells=ps.map(p=>`<div class="rs-cell">${x(p.name)}${p.memo?`<div class="rs-memo">${x(p.memo)}</div>`:''}</div>`).join('');
+      return `<div class="rs-grp">
+        <div class="rs-grp-hd"><div class="rs-grp-title">${x(c)}반</div><div class="rs-grp-count">${ps.length}명</div></div>
+        <div class="rs-grid">${cells}</div>
+      </div>`;
+    }).join('');
+    meta.textContent=`${_rosterFilter} · 총 ${filtered.length}명`;
+  }
+}
+
+function setRosterFilter(v){_rosterFilter=v;renderRoster();}
+
+/* ★ NEW: 모달 (종목 → 선수보기 팝업) */
+function openRosterModal(evFname,evIcon){
+  if(!_lastRoster){fetchRoster(false);}  // 아직 안 받았으면 시도
+  const modal=document.getElementById('roster-modal');
+  document.getElementById('rm-title').innerHTML=`${evIcon} ${x(evFname)} 선수명단`;
+  const body=document.getElementById('rm-body');
+  if(!_lastRoster){
+    body.innerHTML=`<div class="ld-skel"><span class="spin-sm"></span>명단 불러오는 중...</div>`;
+  } else {
+    const filtered=_lastRoster.filter(r=>r.ev===evFname);
+    if(!filtered.length){body.innerHTML=`<div class="rs-empty">등록된 선수가 없습니다</div>`;}
+    else {
+      const CLS_LIST=['1-1','1-2','1-3','1-4','2-1','2-2','2-3','3-1','3-2','3-3','3-4'];
+      const groups={};CLS_LIST.forEach(c=>groups[c]=[]);
+      filtered.forEach(r=>{if(groups[r.cls])groups[r.cls].push(r);});
+      body.innerHTML=CLS_LIST.map(c=>{
+        const ps=groups[c];if(!ps.length)return '';
+        const cells=ps.map(p=>`<div class="rs-cell">${x(p.name)}${p.memo?`<div class="rs-memo">${x(p.memo)}</div>`:''}</div>`).join('');
+        return `<div class="rs-grp"><div class="rs-grp-hd"><div class="rs-grp-title">${x(c)}반</div><div class="rs-grp-count">${ps.length}명</div></div><div class="rs-grid">${cells}</div></div>`;
+      }).join('') + `<div style="text-align:center;font-size:10px;color:var(--muted);margin-top:6px;">총 ${filtered.length}명</div>`;
+    }
+  }
+  modal.classList.add('on');
+}
+function closeRosterModal(e){
+  if(e && e.target.classList && !e.target.classList.contains('rm-back') && !e.target.classList.contains('rm-x'))return;
+  document.getElementById('roster-modal').classList.remove('on');
 }
 
 /* INFO */
@@ -991,6 +1257,8 @@ function go(btn){
   btn.classList.add('on');
   if(id==='score')fetchScores();
   if(id==='song')fetchSongs();
+  if(id==='roster' && !_lastRoster)fetchRoster();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* UTILS */
@@ -1007,15 +1275,16 @@ function toast(msg,isErr=false){
 renderSched();renderEvents();renderInfo();
 // 첫 로딩 표시 (응답 받기 전 빈 화면 방지)
 renderScoreHome(null);renderScoreDetail(null);
-renderNotices(null);renderSongs(null);
-renderNowCard();  // ★ 진행 종목 카드 (대회 시간이면 표시)
+renderNotices(null);renderSongs(null);renderRoster();
+renderNowCard();
 tick();setInterval(tick,1000);
 setInterval(renderSched,30000);
-setInterval(renderNowCard,30000);  // ★ 30초마다 진행 종목 갱신
+setInterval(renderNowCard,30000);
 fetchWeather();
 fetchScores();setInterval(fetchScores,30000);
 fetchNotices();setInterval(fetchNotices,15000);
 fetchSongs();setInterval(fetchSongs,5000);
+fetchRoster();  // 명단은 한 번만 (자주 안 바뀜)
 </script>
 </body>
 </html>
