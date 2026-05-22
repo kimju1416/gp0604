@@ -61,9 +61,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 /* ── TABS ── */
 .tab-bar{background:var(--blue-dk);position:sticky;top:0;z-index:200;box-shadow:0 4px 16px rgba(30,64,175,.4);}
 .tabs{display:flex;max-width:680px;margin:0 auto;overflow-x:hidden;}
-.tab{flex:1;min-width:0;padding:8px 1px;border:none;background:none;font-family:'Noto Sans KR',sans-serif;font-weight:700;color:rgba(255,255,255,.38);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1;}
-.tab-em{font-size:17px;line-height:1;}
-.tab-tx{font-size:9.5px;line-height:1;}
+.tab{flex:1;min-width:0;padding:10px 1px 9px;border:none;background:none;font-family:'Noto Sans KR',sans-serif;font-weight:700;color:rgba(255,255,255,.38);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;line-height:1;}
+.tab-em{font-size:18px;line-height:1;}
+.tab-tx{font-size:10px;line-height:1;letter-spacing:.2px;}
 .tab.on{color:var(--sun);border-bottom-color:var(--sun);}
 .tab:hover:not(.on){color:rgba(255,255,255,.7);}
 
@@ -1004,7 +1004,7 @@ function spinBtn(ids,on){
 let _lastRoster=null;       // [{cls,ev,name,memo}, ...]
 let _rosterErrShown=false;
 let _rosterMode='cls';       // 'cls' | 'ev' | 'srch'
-let _rosterFilter=null;      // 선택된 반/종목 (chip)
+let _rosterFilter='1-1';     // 진입 시 1-1반 자동 선택 (빈 화면 방지)
 
 async function fetchRoster(manual){
   if(manual)spinBtn(['rf-roster'],true);
@@ -1029,7 +1029,10 @@ async function fetchRoster(manual){
 
 function setRosterMode(m){
   _rosterMode=m;
-  _rosterFilter=null;  // 모드 바꾸면 필터 초기화
+  // 모드 전환 시 자동으로 첫 항목 선택 (빈 화면 방지)
+  if(m==='cls') _rosterFilter='1-1';
+  else if(m==='ev') _rosterFilter=EVTS[0].fname;
+  else _rosterFilter=null;  // 검색 모드는 입력 받아야 함
   document.querySelectorAll('.rs-tb').forEach(b=>b.classList.toggle('on', b.dataset.rmode===m));
   document.getElementById('rs-srch').style.display = (m==='srch') ? 'block' : 'none';
   if(m==='srch')document.getElementById('rs-srch').focus();
