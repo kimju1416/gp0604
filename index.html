@@ -313,9 +313,23 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .rs-tb{flex:1;padding:9px 4px;border:none;background:transparent;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
 .rs-tb.on{background:#fff;color:var(--blue-dk);box-shadow:0 1px 4px rgba(0,0,0,.08);}
 .rs-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
-.rs-chip{padding:7px 12px;border:1px solid var(--border);background:#fff;border-radius:18px;font-size:11px;font-weight:700;color:var(--color-text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap;}
-.rs-chip.on{background:var(--blue);color:#fff;border-color:var(--blue);}
-.rs-chip:hover:not(.on){background:#f8fafc;}
+.rs-chip{padding:7px 12px;border:1.5px solid;border-radius:18px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+/* 1학년 - 파랑 */
+.rs-chip-g1{background:#e6f1fb;color:#0c447c;border-color:#b5d4f4;}
+.rs-chip-g1.on{background:#2563eb;color:#fff;border-color:#2563eb;}
+.rs-chip-g1:hover:not(.on){background:#c3ddf8;}
+/* 2학년 - 초록 */
+.rs-chip-g2{background:#e1f5ee;color:#085041;border-color:#9fe1cb;}
+.rs-chip-g2.on{background:#0f6e56;color:#fff;border-color:#0f6e56;}
+.rs-chip-g2:hover:not(.on){background:#b8ead8;}
+/* 3학년 - 앰버 */
+.rs-chip-g3{background:#faeeda;color:#633806;border-color:#fac775;}
+.rs-chip-g3.on{background:#ba7517;color:#fff;border-color:#ba7517;}
+.rs-chip-g3:hover:not(.on){background:#f8d99a;}
+/* 종목별 칩 */
+.rs-chip-ev{background:var(--color-background-secondary);color:var(--color-text-secondary);border-color:var(--color-border-secondary);}
+.rs-chip-ev.on{background:var(--blue-dk);color:#fff;border-color:var(--blue-dk);}
+.rs-chip-ev:hover:not(.on){background:var(--color-border-tertiary);}
 
 .rs-body{min-height:120px;}
 .rs-grp{margin-bottom:14px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;}
@@ -1088,7 +1102,7 @@ function renderRoster(){
   // 칩 렌더링
   chips.innerHTML=items.map(it=>{
     const on = _rosterFilter===it;
-    return `<button class="rs-chip${on?' on':''}" onclick="setRosterFilter('${it.replace(/'/g,"\\'")}')">${x(it)}</button>`;
+    return `<button class="rs-chip ${isClsMode?`rs-chip-g${it.charAt(0)}`:'rs-chip-ev'}${on?' on':''}" onclick="setRosterFilter('${it.replace(/'/g,"\\'")}')">${x(it)}</button>`;
   }).join('');
 
   // 필터 없으면 안내
